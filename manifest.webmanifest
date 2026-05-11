@@ -1,0 +1,21 @@
+{
+  "name": "Auguria · Cifras del día",
+  "short_name": "Auguria",
+  "description": "Cifras diarias de la lotería española leídas a la luz de los astros.",
+  "lang": "es",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0d2a",
+  "theme_color": "#0a0d2a",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any maskable"
+    }
+  ]
+}
