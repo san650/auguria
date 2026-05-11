@@ -163,7 +163,7 @@ body {
    breathes in opacity even more slowly */
 .cosmos__wheel {
   position: absolute;
-  top: 50%; left: 50%;
+  top: clamp(9rem, 17vw, 13rem); left: 50%;
   width: min(140vmin, 1100px);
   aspect-ratio: 1;
   color: var(--gold);
