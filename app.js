@@ -329,11 +329,19 @@ function openNumero(n) {
   const entry = NUMEROLOGY[reduced] ?? NUMEROLOGY[0];
   const isMaster = (reduced === 11 || reduced === 22 || reduced === 33);
 
-  dlgSigil.textContent = String(reduced);
-  dlgTitle.textContent = `${n} · ${entry.title}`;
-  dlgRed.textContent = n === reduced
-    ? "Cifra raíz"
-    : (isMaster ? `Reducción: ${n} ⟶ ${reduced} · número maestro` : `Reducción: ${n} ⟶ ${reduced}`);
+  dlgSigil.textContent = String(n);
+  dlgTitle.textContent = entry.title;
+
+  dlgRed.replaceChildren();
+  if (n === reduced) {
+    dlgRed.append("Cifra raíz");
+  } else {
+    dlgRed.append(
+      "Reduce a ",
+      el("span", { class: "numero__reduction-num", text: String(reduced) }),
+      isMaster ? " · número maestro" : "",
+    );
+  }
   dlgKeys.textContent = entry.keywords;
   dlgBody.textContent = entry.body;
 

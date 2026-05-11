@@ -633,12 +633,28 @@ body {
 }
 .numero__reduction {
   font-family: var(--font-serif);
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--vellum-soft);
-  opacity: 0.7;
+  opacity: 0.85;
   margin: 0 0 1rem;
+}
+.numero__reduction-num {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.7em;
+  height: 1.7em;
+  padding: 0 0.45em;
+  margin: 0 0.1em;
+  font-family: var(--font-display);
+  font-size: 1.15em;
+  letter-spacing: 0;
+  color: var(--gold);
+  border: 1px solid rgba(212, 168, 87, 0.55);
+  border-radius: 999px;
+  vertical-align: -0.35em;
+  background: rgba(212, 168, 87, 0.06);
 }
 .numero__keywords {
   font-family: var(--font-body);

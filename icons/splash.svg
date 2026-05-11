@@ -1,0 +1,238 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1290 2796" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="vault" cx="50%" cy="40%" r="78%">
+      <stop offset="0%"  stop-color="#221b5e"/>
+      <stop offset="42%" stop-color="#0d0f33"/>
+      <stop offset="100%" stop-color="#04051a"/>
+    </radialGradient>
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"  stop-color="#d4a857" stop-opacity="0.32"/>
+      <stop offset="45%" stop-color="#a07434" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#d4a857" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="nebulaA" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#5a2d70" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#5a2d70" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="nebulaB" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2a3a78" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#2a3a78" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ringGold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#ecc879" stop-opacity="0.55"/>
+      <stop offset="50%"  stop-color="#d4a857" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#8a6529" stop-opacity="0.15"/>
+    </linearGradient>
+    <linearGradient id="starShine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"  stop-color="#f7e6a8"/>
+      <stop offset="48%" stop-color="#d4a857"/>
+      <stop offset="100%" stop-color="#7d5a26"/>
+    </linearGradient>
+    <radialGradient id="bezel" cx="40%" cy="38%" r="65%">
+      <stop offset="0%"   stop-color="#f7eac0"/>
+      <stop offset="55%"  stop-color="#d4a857"/>
+      <stop offset="100%" stop-color="#6e4c1e"/>
+    </radialGradient>
+  </defs>
+
+  <!-- celestial vault -->
+  <rect width="1290" height="2796" fill="url(#vault)"/>
+
+  <!-- nebulae -->
+  <ellipse cx="1080" cy="380"  rx="780" ry="780" fill="url(#nebulaB)"/>
+  <ellipse cx="180"  cy="2380" rx="760" ry="760" fill="url(#nebulaA)"/>
+
+  <!-- central halo -->
+  <ellipse cx="645" cy="1398" rx="920" ry="920" fill="url(#halo)"/>
+
+  <!-- starfield: large bright stars -->
+  <g fill="#f4e7c2">
+    <circle cx="118"  cy="240"  r="2.4"/>
+    <circle cx="1180" cy="180"  r="2.0"/>
+    <circle cx="220"  cy="900"  r="1.8"/>
+    <circle cx="1080" cy="980"  r="2.2"/>
+    <circle cx="90"   cy="1620" r="2.6"/>
+    <circle cx="1200" cy="1700" r="1.6"/>
+    <circle cx="160"  cy="2200" r="2.0"/>
+    <circle cx="1140" cy="2300" r="2.4"/>
+    <circle cx="640"  cy="120"  r="1.8"/>
+    <circle cx="320"  cy="2700" r="1.6"/>
+    <circle cx="980"  cy="2660" r="2.0"/>
+  </g>
+  <!-- starfield: medium -->
+  <g fill="#f4e7c2" opacity="0.85">
+    <circle cx="260"  cy="420"  r="1.4"/>
+    <circle cx="940"  cy="320"  r="1.2"/>
+    <circle cx="420"  cy="640"  r="1.4"/>
+    <circle cx="820"  cy="760"  r="1.0"/>
+    <circle cx="120"  cy="1080" r="1.4"/>
+    <circle cx="1150" cy="1280" r="1.2"/>
+    <circle cx="240"  cy="1480" r="1.4"/>
+    <circle cx="1060" cy="1520" r="1.2"/>
+    <circle cx="380"  cy="1880" r="1.2"/>
+    <circle cx="900"  cy="1960" r="1.4"/>
+    <circle cx="180"  cy="2540" r="1.2"/>
+    <circle cx="1080" cy="2580" r="1.4"/>
+    <circle cx="540"  cy="360"  r="1.0"/>
+    <circle cx="760"  cy="540"  r="1.2"/>
+    <circle cx="500"  cy="2680" r="1.0"/>
+  </g>
+  <!-- starfield: faint dust -->
+  <g fill="#c9a5e8" opacity="0.7">
+    <circle cx="340"  cy="180"  r="0.9"/>
+    <circle cx="700"  cy="240"  r="0.9"/>
+    <circle cx="1040" cy="520"  r="0.9"/>
+    <circle cx="200"  cy="700"  r="0.9"/>
+    <circle cx="560"  cy="880"  r="0.9"/>
+    <circle cx="980"  cy="1140" r="0.9"/>
+    <circle cx="240"  cy="1280" r="0.9"/>
+    <circle cx="1140" cy="1880" r="0.9"/>
+    <circle cx="380"  cy="2080" r="0.9"/>
+    <circle cx="740"  cy="2180" r="0.9"/>
+    <circle cx="60"   cy="1840" r="0.9"/>
+    <circle cx="1240" cy="2480" r="0.9"/>
+  </g>
+
+  <!-- twinkle: tiny crosses -->
+  <g stroke="#f4e7c2" stroke-width="0.6" opacity="0.55">
+    <g transform="translate(170 540)"><path d="M-6 0 H6 M0 -6 V6"/></g>
+    <g transform="translate(1110 720)"><path d="M-5 0 H5 M0 -5 V5"/></g>
+    <g transform="translate(290 2020)"><path d="M-7 0 H7 M0 -7 V7"/></g>
+    <g transform="translate(1020 2200)"><path d="M-5 0 H5 M0 -5 V5"/></g>
+    <g transform="translate(640 460)"><path d="M-5 0 H5 M0 -5 V5"/></g>
+  </g>
+
+  <!-- ── ZODIAC WHEEL (centered at 645, 1398) ── -->
+  <g transform="translate(645 1398)">
+    <!-- outermost ring -->
+    <circle r="640" fill="none" stroke="url(#ringGold)" stroke-width="1.4"/>
+    <circle r="624" fill="none" stroke="#d4a857" stroke-width="0.4" opacity="0.35"/>
+    <!-- mid ring -->
+    <circle r="528" fill="none" stroke="url(#ringGold)" stroke-width="1.0" opacity="0.75"/>
+    <!-- inner ring -->
+    <circle r="438" fill="none" stroke="url(#ringGold)" stroke-width="0.7" opacity="0.55"/>
+    <!-- tiny inner ring framing the star -->
+    <circle r="396" fill="none" stroke="#d4a857" stroke-width="0.3" opacity="0.4"/>
+
+    <!-- 12 spokes (between mid ring r=528 and outer r=624) -->
+    <g stroke="#d4a857" stroke-width="0.7" opacity="0.55">
+      <line x1="0" y1="-624" x2="0" y2="-528"/>
+      <line x1="312" y1="-540" x2="264" y2="-457" transform="rotate(0)"/>
+    </g>
+    <g stroke="#d4a857" stroke-width="0.8" opacity="0.55" fill="none">
+      <line x1="0" y1="-624" x2="0" y2="-528" transform="rotate(0)"/>
+      <line x1="0" y1="-624" x2="0" y2="-528" transform="rotate(30)"/>
+      <line x1="0" y1="-624" x2="0" y2="-528" transform="rotate(60)"/>
+      <line x1="0" y1="-624" x2="0" y2="-528" transform="rotate(90)"/>
+      <line x1="0" y1="-624" x2="0" y2="-528" transform="rotate(120)"/>
+      <line x1="0" y1="-624" x2="0" y2="-528" transform="rotate(150)"/>
+      <line x1="0" y1="-624" x2="0" y2="-528" transform="rotate(180)"/>
+      <line x1="0" y1="-624" x2="0" y2="-528" transform="rotate(210)"/>
+      <line x1="0" y1="-624" x2="0" y2="-528" transform="rotate(240)"/>
+      <line x1="0" y1="-624" x2="0" y2="-528" transform="rotate(270)"/>
+      <line x1="0" y1="-624" x2="0" y2="-528" transform="rotate(300)"/>
+      <line x1="0" y1="-624" x2="0" y2="-528" transform="rotate(330)"/>
+    </g>
+
+    <!-- 12 minor ticks between mid ring r=528 and inner r=438 (offset 15°) -->
+    <g stroke="#d4a857" stroke-width="0.5" opacity="0.4">
+      <line x1="0" y1="-528" x2="0" y2="-498" transform="rotate(15)"/>
+      <line x1="0" y1="-528" x2="0" y2="-498" transform="rotate(45)"/>
+      <line x1="0" y1="-528" x2="0" y2="-498" transform="rotate(75)"/>
+      <line x1="0" y1="-528" x2="0" y2="-498" transform="rotate(105)"/>
+      <line x1="0" y1="-528" x2="0" y2="-498" transform="rotate(135)"/>
+      <line x1="0" y1="-528" x2="0" y2="-498" transform="rotate(165)"/>
+      <line x1="0" y1="-528" x2="0" y2="-498" transform="rotate(195)"/>
+      <line x1="0" y1="-528" x2="0" y2="-498" transform="rotate(225)"/>
+      <line x1="0" y1="-528" x2="0" y2="-498" transform="rotate(255)"/>
+      <line x1="0" y1="-528" x2="0" y2="-498" transform="rotate(285)"/>
+      <line x1="0" y1="-528" x2="0" y2="-498" transform="rotate(315)"/>
+      <line x1="0" y1="-528" x2="0" y2="-498" transform="rotate(345)"/>
+    </g>
+
+    <!-- constellation marks between mid & inner ring (tiny dots) -->
+    <g fill="#d4a857" opacity="0.65">
+      <circle cx="0" cy="-484" r="3.2"/>
+      <g transform="rotate(30)"><circle cx="0" cy="-484" r="2.4"/></g>
+      <g transform="rotate(60)"><circle cx="0" cy="-484" r="3.2"/></g>
+      <g transform="rotate(90)"><circle cx="0" cy="-484" r="2.4"/></g>
+      <g transform="rotate(120)"><circle cx="0" cy="-484" r="3.2"/></g>
+      <g transform="rotate(150)"><circle cx="0" cy="-484" r="2.4"/></g>
+      <g transform="rotate(180)"><circle cx="0" cy="-484" r="3.2"/></g>
+      <g transform="rotate(210)"><circle cx="0" cy="-484" r="2.4"/></g>
+      <g transform="rotate(240)"><circle cx="0" cy="-484" r="3.2"/></g>
+      <g transform="rotate(270)"><circle cx="0" cy="-484" r="2.4"/></g>
+      <g transform="rotate(300)"><circle cx="0" cy="-484" r="3.2"/></g>
+      <g transform="rotate(330)"><circle cx="0" cy="-484" r="2.4"/></g>
+    </g>
+  </g>
+
+  <!-- ── HERO: Eight-pointed star ── -->
+  <g transform="translate(645 1398)">
+    <!-- soft glow behind the star -->
+    <circle r="380" fill="url(#halo)"/>
+    <!-- outer eight-pointed star -->
+    <path d="M0 -340 L42 -42 L340 0 L42 42 L0 340 L-42 42 L-340 0 L-42 -42 Z"
+          fill="url(#starShine)"/>
+    <!-- inner cutout (smaller, inverted color) -->
+    <path d="M0 -206 L26 -26 L206 0 L26 26 L0 206 L-26 26 L-206 0 L-26 -26 Z"
+          fill="#06081f"/>
+    <!-- central bezel -->
+    <circle r="46" fill="url(#bezel)"/>
+    <circle r="14" fill="#06081f"/>
+    <!-- four short rays through the bezel -->
+    <g stroke="#0a0d2a" stroke-width="2" opacity="0.85">
+      <line x1="-30" y1="0" x2="-18" y2="0"/>
+      <line x1="18"  y1="0" x2="30"  y2="0"/>
+      <line x1="0" y1="-30" x2="0" y2="-18"/>
+      <line x1="0" y1="18"  x2="0" y2="30"/>
+    </g>
+  </g>
+
+  <!-- ── TOP ORNAMENT + eyebrow ── -->
+  <g transform="translate(645 612)" stroke="#d4a857" fill="none" opacity="0.85">
+    <line x1="-310" y1="0" x2="-44" y2="0" stroke-width="1.2"/>
+    <line x1="44"   y1="0" x2="310" y2="0" stroke-width="1.2"/>
+    <circle r="20" stroke-width="1.4"/>
+    <circle r="9"  stroke-width="1.4"/>
+    <path d="M-32 0 L-24 0 M24 0 L32 0 M0 -32 L0 -24 M0 24 L0 32" stroke-width="1.4"/>
+  </g>
+  <text x="645" y="730" text-anchor="middle"
+        font-family="Baskerville, Didot, serif"
+        font-style="italic"
+        font-size="38"
+        letter-spacing="16"
+        fill="#d4a857"
+        opacity="0.92">ORÁCULO NUMÉRICO</text>
+
+  <!-- ── WORDMARK ── -->
+  <text x="645" y="2130" text-anchor="middle"
+        font-family="Didot, 'Bodoni 72', serif"
+        font-size="248"
+        font-weight="400"
+        letter-spacing="22"
+        fill="#f0e3c0">AUGURIA</text>
+
+  <!-- ── SUBTITLE ── -->
+  <text x="645" y="2244" text-anchor="middle"
+        font-family="Baskerville, serif"
+        font-style="italic"
+        font-size="46"
+        fill="#d4a857"
+        opacity="0.9">Las cifras que el día escribe</text>
+
+  <!-- ── BOTTOM ORNAMENT ── -->
+  <g transform="translate(645 2460)" stroke="#d4a857" fill="none" opacity="0.85">
+    <path d="M-360 0 L-44 0 M44 0 L360 0" stroke-width="1.1"/>
+    <circle r="18" stroke-width="1.2"/>
+    <circle r="6"  fill="#d4a857" stroke="none"/>
+  </g>
+
+  <!-- year fineprint -->
+  <text x="645" y="2610" text-anchor="middle"
+        font-family="Didot, serif"
+        font-size="26"
+        letter-spacing="20"
+        fill="#d4a857"
+        opacity="0.55">MMXXVI</text>
+</svg>
