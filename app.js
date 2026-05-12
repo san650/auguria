@@ -120,11 +120,17 @@ const GAMES = [
     tag: "La fortuna habla cada día.",
     sigil: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"><path d="M22 6 A12 12 0 1 0 22 26 A10 10 0 1 1 22 6 Z"/><circle cx="11" cy="13" r="0.9" fill="currentColor"/><circle cx="9" cy="19" r="0.6" fill="currentColor"/><circle cx="14" cy="22" r="0.5" fill="currentColor"/></g></svg>`,
     generate(rng) {
-      const main = pickUnique(rng, 6, 49);
-      const reintegro = pickOne(rng, 0, 9);
+      const play = () => ({
+        main: pickUnique(rng, 6, 49),
+        reintegro: pickOne(rng, 0, 9),
+      });
+      const a = play();
+      const b = play();
       return [
-        { label: "Combinación", numbers: main },
-        { label: "Reintegro", numbers: [reintegro], variants: ["special"] },
+        { label: "Combinación", numbers: a.main },
+        { label: "Reintegro", numbers: [a.reintegro], variants: ["special"] },
+        { label: "Apuesta 2 · Combinación", numbers: b.main },
+        { label: "Reintegro", numbers: [b.reintegro], variants: ["special"] },
       ];
     },
   },
