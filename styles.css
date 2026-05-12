@@ -268,7 +268,7 @@ body {
   padding: 0 var(--pad) clamp(3rem, 8vw, 5rem);
   display: flex;
   flex-direction: column;
-  gap: clamp(2rem, 4vw, 3rem);
+  gap: clamp(4rem, 4vw, 3rem);
 }
 
 /* ── Card ─────────────────────────────────────────────────── */
@@ -292,6 +292,7 @@ body {
   transform: translateY(20px);
   animation: cardIn 0.9s cubic-bezier(.2,.7,.2,1) forwards;
 }
+
 .card:nth-child(1) { animation-delay: 0.05s; }
 .card:nth-child(2) { animation-delay: 0.15s; }
 .card:nth-child(3) { animation-delay: 0.25s; }
