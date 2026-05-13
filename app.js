@@ -319,7 +319,47 @@ function renderGames() {
   const date = todayKey();
   const frag = document.createDocumentFragment();
   for (const game of GAMES) frag.append(buildCard(game, date));
+  frag.append(buildJugadaCard());
   main.replaceChildren(frag);
+}
+
+// The jugada card lives in #games as a sibling of the lottery cards,
+// so it inherits all of .card's styling (padding, sigil, brackets).
+function buildJugadaCard() {
+  const card = el("article", {
+    class: "card jugada-card",
+    "data-sequence-target": "",
+    "aria-label": "Mi jugada",
+    hidden: true,
+  });
+
+  const sigil = el("div", { class: "card__sigil" });
+  sigil.appendChild(svgNode(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="16" r="3"/><circle cx="16" cy="16" r="3"/><circle cx="24" cy="16" r="3"/><path d="M11 16 L13 16 M19 16 L21 16" opacity="0.6"/><circle cx="8"  cy="16" r="1" fill="currentColor"/><circle cx="16" cy="16" r="1" fill="currentColor"/><circle cx="24" cy="16" r="1" fill="currentColor"/></g></svg>`));
+  card.append(sigil);
+
+  const clearBtn = el("button", {
+    type: "button",
+    class: "sequence__clear jugada-card__clear",
+    "aria-label": "Borrar mi jugada",
+  });
+  clearBtn.appendChild(svgNode(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 3 L11 11 M11 3 L3 11" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`));
+  card.append(clearBtn);
+
+  const head = el("div", { class: "card__head" },
+    el("p", { class: "card__eyebrow", text: "Mi jugada" }),
+    el("h2", { class: "card__name", text: "La Combinación" }),
+    el("p", { class: "card__tag" }, el("span", { class: "sequence__count" })),
+  );
+  card.append(head);
+
+  card.append(el("ol", { class: "sequence__list" }));
+
+  card.append(el("p", {
+    class: "card__hint",
+    text: "Pulsa una cifra del oráculo o de los sueños para agregarla.",
+  }));
+
+  return card;
 }
 
 // ── NUMEROLOGY DIALOG ────────────────────────────────────────
@@ -331,6 +371,7 @@ const dlgBody      = document.getElementById("numero-body");
 const dlgSigil     = document.getElementById("numero-sigil");
 const dlgDream     = document.getElementById("numero-dream");
 const dlgDreamName = document.getElementById("numero-dream-name");
+const dlgAdd       = document.getElementById("numero-add");
 
 function openNumero(n) {
   const reduced = reduceNumber(n);
@@ -368,19 +409,56 @@ function openNumero(n) {
     dlgDream.hidden = true;
   }
 
+  // Action button reflects whether this number is already in the sequence.
+  dlgAdd.dataset.number = formatNumKey(n);
+  refreshDlgAdd();
+
   if (typeof dialog.showModal === "function") dialog.showModal();
   else dialog.setAttribute("open", "");
 }
 
 document.addEventListener("click", (ev) => {
-  const btn = ev.target.closest(".num, .sueno__face, .sueno-row__btn");
+  // Toggle the drawer (dreams view)
+  if (ev.target.closest(".seq-drawer__toggle")) { toggleDrawer(); return; }
+
+  // Remove a single chip — confirms first
+  const chipX = ev.target.closest(".seq-chip__remove");
+  if (chipX) { confirmedRemoveFromSequence(chipX.dataset.removeNumber); return; }
+
+  // Clear the whole jugada — confirms first
+  if (ev.target.closest(".sequence__clear")) { confirmedClearSequence(); return; }
+
+  // Add / remove via the dialog action button
+  if (ev.target.closest(".numero__add") && !dlgAdd.disabled) {
+    const numKey = dlgAdd.dataset.number;
+    if (!numKey) return;
+    if (dlgAdd.dataset.action === "remove") {
+      // Quitar via the dialog also asks for confirmation. Close numerology
+      // first so the confirm stacks cleanly.
+      dialog.close();
+      confirmedRemoveFromSequence(numKey);
+    } else {
+      addToSequence(numKey);
+      // Close the numerology dialog automatically — the drawer's pop-up
+      // animation already gives the user feedback that the pick landed.
+      dialog.close();
+    }
+    return;
+  }
+
+  // Open numerology (lottery medallions, sueño cells, sueño rows, chips)
+  const btn = ev.target.closest(".num, .sueno__face, .sueno-row__btn, .seq-chip__num");
   if (btn) { openNumero(Number(btn.dataset.number)); return; }
+
   if (ev.target.closest("[data-close]")) { dialog.close(); return; }
   if (ev.target === dialog) dialog.close();
 });
 
 document.addEventListener("keydown", (ev) => {
-  if (ev.key === "Escape" && dialog.open) dialog.close();
+  if (ev.key === "Escape") {
+    if (confirmDlg?.open) { settleConfirm(false); return; }
+    if (dialog.open) { dialog.close(); return; }
+  }
 });
 
 // ── SUEÑOS · Tabla de los sueños (Quiniela, two-digit) ───────
@@ -739,6 +817,213 @@ function wireSuenosFilter() {
   });
 }
 
+// ── SEQUENCE · user's picked numbers, persisted in localStorage ──
+const SEQUENCE_KEY = "auguria:sequence";
+const MAX_SEQUENCE = 12;
+
+// Numbers are stored as zero-padded strings ("05", "777") so the chip
+// always renders the same width the user originally tapped.
+function formatNumKey(n) {
+  return n < 100 ? String(n).padStart(2, "0") : String(n);
+}
+
+function loadSequence() {
+  try {
+    const raw = localStorage.getItem(SEQUENCE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(s => typeof s === "string").slice(0, MAX_SEQUENCE);
+  } catch { return []; }
+}
+function saveSequence() {
+  try { localStorage.setItem(SEQUENCE_KEY, JSON.stringify(_sequence)); }
+  catch { /* private mode / quota — best-effort */ }
+}
+
+let _sequence = loadSequence();
+
+function addToSequence(numKey) {
+  if (!numKey) return;
+  if (_sequence.includes(numKey)) return;
+  if (_sequence.length >= MAX_SEQUENCE) return;
+  _sequence.push(numKey);
+  saveSequence();
+  renderSequence();
+  // Auto-open the drawer so the user sees the pick land.
+  setDrawerState("expanded");
+}
+function removeFromSequence(numKey) {
+  const i = _sequence.indexOf(numKey);
+  if (i < 0) return;
+  _sequence.splice(i, 1);
+  saveSequence();
+  renderSequence();
+}
+function clearSequence() {
+  if (_sequence.length === 0) return;
+  _sequence = [];
+  saveSequence();
+  renderSequence();
+}
+
+// ── Confirmation dialog ──────────────────────────────────────
+const confirmDlg    = document.getElementById("confirm-dialog");
+const confirmTitle  = document.getElementById("confirm-title");
+const confirmBody   = document.getElementById("confirm-body");
+const confirmAccept = confirmDlg?.querySelector("[data-confirm-accept]");
+const confirmCancel = confirmDlg?.querySelector("[data-confirm-cancel]");
+
+let _confirmResolver = null;
+function askConfirm({ title, body, confirmLabel = "Borrar" }) {
+  return new Promise(resolve => {
+    if (!confirmDlg) { resolve(true); return; }
+    confirmTitle.textContent = title;
+    confirmBody.textContent = body || "";
+    confirmBody.hidden = !body;
+    confirmAccept.textContent = confirmLabel;
+    _confirmResolver = resolve;
+    if (typeof confirmDlg.showModal === "function") confirmDlg.showModal();
+    else confirmDlg.setAttribute("open", "");
+  });
+}
+function settleConfirm(value) {
+  if (_confirmResolver) { _confirmResolver(value); _confirmResolver = null; }
+  if (confirmDlg.open) confirmDlg.close();
+}
+confirmAccept?.addEventListener("click", () => settleConfirm(true));
+confirmCancel?.addEventListener("click", () => settleConfirm(false));
+confirmDlg?.addEventListener("close", () => { if (_confirmResolver) { _confirmResolver(false); _confirmResolver = null; } });
+confirmDlg?.addEventListener("click", (ev) => { if (ev.target === confirmDlg) settleConfirm(false); });
+
+// Confirmation wrappers — user-facing destructive actions go through these.
+async function confirmedClearSequence() {
+  if (_sequence.length === 0) return;
+  const n = _sequence.length;
+  const ok = await askConfirm({
+    title: "¿Borrar mi jugada?",
+    body: n === 1
+      ? "La cifra elegida se perderá."
+      : `Las ${n} cifras elegidas se perderán.`,
+    confirmLabel: "Borrar",
+  });
+  if (ok) clearSequence();
+}
+async function confirmedRemoveFromSequence(numKey) {
+  if (!_sequence.includes(numKey)) return;
+  const ok = await askConfirm({
+    title: `¿Quitar ${numKey} de mi jugada?`,
+    body: "Puedes volver a agregarla cuando quieras.",
+    confirmLabel: "Quitar",
+  });
+  if (ok) removeFromSequence(numKey);
+}
+
+const chipXMarkup = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2 L10 10 M10 2 L2 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
+
+// Roman numerals for the chip ordinals (sequence positions I–XII).
+const ROMAN = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+
+function renderSequence() {
+  const has = _sequence.length > 0;
+  document.body.toggleAttribute("data-has-sequence", has);
+
+  const targets = document.querySelectorAll("[data-sequence-target]");
+  for (const target of targets) {
+    const isDrawer = target.classList.contains("seq-drawer");
+
+    // The drawer stays in the DOM at all times (sticky); other targets
+    // (the home jugada card) only show when there is at least one pick.
+    target.hidden = !has && !isDrawer;
+
+    const countEls = target.querySelectorAll(".sequence__count");
+    countEls.forEach(el => {
+      el.textContent = has ? `${_sequence.length} de ${MAX_SEQUENCE}` : "vacía";
+    });
+
+    const listEl = target.querySelector(".sequence__list");
+    if (listEl) {
+      const frag = document.createDocumentFragment();
+      _sequence.forEach((num, i) => {
+        const li = el("li", { class: "seq-chip" });
+
+        const ordinal = el("span", {
+          class: "seq-chip__ordinal",
+          "aria-hidden": "true",
+          text: ROMAN[i + 1] || String(i + 1),
+        });
+
+        const numBtn = el("button", {
+          type: "button",
+          class: "seq-chip__num",
+          "data-number": num,
+          "data-len": String(num.length),
+          "aria-label": `Cifra ${num} · ver lectura`,
+          text: num,
+        });
+
+        const xBtn = el("button", {
+          type: "button",
+          class: "seq-chip__remove",
+          "data-remove-number": num,
+          "aria-label": `Quitar ${num} de mi jugada`,
+        });
+        xBtn.appendChild(svgNode(chipXMarkup));
+
+        li.append(ordinal, numBtn, xBtn);
+        frag.append(li);
+      });
+      listEl.replaceChildren(frag);
+    }
+  }
+
+  // When the jugada empties out, collapse the drawer to give the dreams
+  // table back its full screen space.
+  if (!has) setDrawerState("collapsed");
+
+  refreshDlgAdd();
+}
+
+// Sync the dialog's action button to the current number + jugada state.
+function refreshDlgAdd() {
+  if (!dlgAdd) return;
+  const numKey = dlgAdd.dataset.number;
+  if (!numKey) {
+    dlgAdd.hidden = true;
+    return;
+  }
+  dlgAdd.hidden = false;
+  if (_sequence.includes(numKey)) {
+    dlgAdd.textContent = "Quitar de mi jugada";
+    dlgAdd.dataset.action = "remove";
+    dlgAdd.disabled = false;
+  } else if (_sequence.length >= MAX_SEQUENCE) {
+    dlgAdd.textContent = `Jugada completa · ${MAX_SEQUENCE}`;
+    dlgAdd.dataset.action = "";
+    dlgAdd.disabled = true;
+  } else {
+    dlgAdd.textContent = "Agregar a mi jugada";
+    dlgAdd.dataset.action = "add";
+    dlgAdd.disabled = false;
+  }
+}
+
+// ── DRAWER state (dreams view) ───────────────────────────────
+function setDrawerState(state /* "expanded" | "collapsed" */) {
+  const drawer = document.querySelector(".seq-drawer");
+  if (!drawer) return;
+  drawer.dataset.state = state;
+  drawer.querySelector(".seq-drawer__toggle")?.setAttribute(
+    "aria-expanded", state === "expanded" ? "true" : "false"
+  );
+  document.body.dataset.drawerState = state;
+}
+function toggleDrawer() {
+  const drawer = document.querySelector(".seq-drawer");
+  if (!drawer) return;
+  setDrawerState(drawer.dataset.state === "expanded" ? "collapsed" : "expanded");
+}
+
 // ── HASH ROUTER ──────────────────────────────────────────────
 function syncRoute() {
   const view = location.hash === "#/dreams" ? "dreams" : "home";
@@ -754,6 +1039,11 @@ renderGames();
 renderSuenosTwo();
 renderSuenosThree();
 wireSuenosFilter();
+renderSequence();
+// Sync the body's drawer-state attribute to the drawer's HTML default so
+// the bottom-clearance CSS variable resolves correctly on first paint.
+document.body.dataset.drawerState =
+  document.querySelector(".seq-drawer")?.dataset.state || "expanded";
 syncRoute();
 
 // ── PWA ──────────────────────────────────────────────────────

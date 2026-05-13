@@ -109,6 +109,7 @@
     </header>
 
     <!-- ─────────────────  CARDS  ───────────────── -->
+    <!-- Lottery games + the jugada card (appended dynamically by app.js) -->
     <main id="games" class="games" aria-live="polite"></main>
 
     <!-- ─────────────────  FOOTER  ───────────────── -->
@@ -212,6 +213,31 @@
     </footer>
   </section>
 
+  <!-- ─────────────────  JUGADA · drawer (body-level so it pins to the viewport)  ───────────────── -->
+  <aside class="seq-drawer" data-sequence-target data-state="collapsed" aria-label="Mi jugada">
+    <div class="seq-drawer__rule" aria-hidden="true"></div>
+    <div class="seq-drawer__bar">
+      <button type="button" class="seq-drawer__toggle" aria-expanded="false" aria-controls="seq-drawer-body">
+        <span class="seq-drawer__chevron" aria-hidden="true">
+          <svg viewBox="0 0 16 8"><path d="M2 6 L8 2 L14 6" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="seq-drawer__title">
+          <span class="seq-drawer__eyebrow">Mi jugada</span>
+          <span class="sequence__count" aria-live="polite"></span>
+        </span>
+      </button>
+      <button type="button" class="sequence__clear seq-drawer__clear" aria-label="Borrar mi jugada">
+        <svg viewBox="0 0 14 14" aria-hidden="true">
+          <path d="M3 3 L11 11 M11 3 L3 11" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="seq-drawer__body" id="seq-drawer-body">
+      <ol class="sequence__list"></ol>
+      <p class="seq-drawer__empty">Pulsa una cifra del oráculo o de los sueños para empezar tu jugada.</p>
+    </div>
+  </aside>
+
   <!-- ─────────────────  NUMEROLOGY DIALOG  ───────────────── -->
   <dialog id="numero-dialog" class="numero" aria-labelledby="numero-title">
     <button class="numero__close" type="button" aria-label="Cerrar" data-close>
@@ -226,6 +252,18 @@
     <div class="numero__dream" id="numero-dream" hidden>
       <p class="numero__dream-label">Sueño asociado</p>
       <p class="numero__dream-name" id="numero-dream-name"></p>
+    </div>
+    <button type="button" class="numero__add" id="numero-add"></button>
+  </dialog>
+
+  <!-- ─────────────────  CONFIRMATION DIALOG  ───────────────── -->
+  <dialog id="confirm-dialog" class="confirm" aria-labelledby="confirm-title">
+    <p class="confirm__eyebrow">Confirmar</p>
+    <h2 id="confirm-title" class="confirm__title"></h2>
+    <p id="confirm-body" class="confirm__body"></p>
+    <div class="confirm__actions">
+      <button type="button" class="confirm__btn confirm__btn--cancel" data-confirm-cancel>Conservar</button>
+      <button type="button" class="confirm__btn confirm__btn--confirm" data-confirm-accept>Borrar</button>
     </div>
   </dialog>
 

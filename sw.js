@@ -1,5 +1,5 @@
 /* Auguria service worker — offline-first cache. */
-const VERSION = "auguria-v7";
+const VERSION = "auguria-v11";
 const ASSETS = [
   "./",
   "./index.html",

@@ -544,26 +544,37 @@ body {
 
 /* ─────────────────  NUMEROLOGY DIALOG  ───────────────── */
 .numero {
+  /* margin:auto + inset:0 is the most reliable cross-browser way to
+     center a <dialog> (iOS Safari ignores transform-based centering
+     when :modal sets its own positioning). */
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(440px, calc(100vw - 2rem));
+  max-height: calc(100dvh - 2rem - var(--safe-top) - var(--safe-bottom));
+  height: max-content;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+
   border: 1px solid rgba(212,168,87,0.5);
   background:
     radial-gradient(ellipse at top, rgba(212,168,87,0.1) 0%, transparent 60%),
     linear-gradient(180deg, #15184a 0%, #0a0d2a 100%);
   color: var(--vellum);
-  width: min(440px, calc(100vw - 2rem));
-  padding: 2.75rem 1.75rem 2.25rem;
+  padding: 2.5rem 1.75rem 2rem;
   border-radius: 4px;
   text-align: center;
   box-shadow:
     0 0 0 1px rgba(212,168,87,0.15),
     0 30px 80px -10px rgba(0,0,0,0.8),
     0 0 80px -10px rgba(212,168,87,0.2);
-  position: fixed;
-  top: 50%; left: 50%;
-  transform: translate(-50%, calc(-50% + 12px));
+
   opacity: 0;
+  transform: translateY(14px);
   transition: opacity 0.35s ease, transform 0.35s cubic-bezier(.2,.7,.2,1);
 }
-.numero[open] { opacity: 1; transform: translate(-50%, -50%); }
+.numero[open] { opacity: 1; transform: translateY(0); }
 .numero::backdrop {
   background: radial-gradient(circle at center, rgba(10,13,42,0.6), rgba(0,0,0,0.85));
   backdrop-filter: blur(4px);
@@ -1189,4 +1200,489 @@ body[data-active-view="home"]   [data-view="dreams"] { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .sueno, .suenos { opacity: 1 !important; transform: none !important; animation: none !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Mi Jugada — the user's working tally.
+   Home view: an .article.card inside #games (same look as the
+   lottery cards). Dreams view: a bottom-anchored drawer.
+   Both fed by the same localStorage state.
+   ───────────────────────────────────────────────────────────── */
+
+/* ── Jugada card on the home view ───────────────────────── */
+.jugada-card[hidden] { display: none; }
+.jugada-card .card__hint { margin-top: 1.2rem; }
+
+/* Clear button — small × at the top-right of the card */
+.jugada-card__clear {
+  position: absolute;
+  top: 14px; right: 14px;
+  z-index: 2;
+}
+
+/* Centered chip flow inside the card */
+.jugada-card .sequence__list {
+  justify-content: center;
+  margin: 0.5rem auto 0;
+}
+
+/* ── Shared inner pieces (count, clear button, chip list) ── */
+.sequence__count {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.sequence__clear {
+  width: 30px; height: 30px;
+  display: grid; place-items: center;
+  color: var(--gold);
+  border: 1px solid rgba(212,168,87,0.4);
+  border-radius: 50%;
+  background: transparent;
+  transition: transform 0.3s, color 0.3s, border-color 0.3s, background 0.3s;
+  flex: 0 0 auto;
+}
+.sequence__clear:hover,
+.sequence__clear:focus-visible {
+  transform: rotate(90deg);
+  color: var(--gold-bright);
+  border-color: var(--gold-bright);
+  background: rgba(212,168,87,0.08);
+  outline: 0;
+}
+.sequence__clear svg { width: 12px; height: 12px; }
+
+.sequence__list {
+  list-style: none;
+  padding: 0.6rem 0.1rem 0.2rem; margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem 1.15rem;
+  justify-content: flex-start;
+}
+
+/* ── The chip: a celestial body with its ordinal above ──── */
+.seq-chip {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  animation: chipIn 0.4s cubic-bezier(.2,.7,.2,1) both;
+}
+@keyframes chipIn {
+  from { opacity: 0; transform: scale(0.78) translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.seq-chip__ordinal {
+  font-family: var(--font-serif);
+  font-size: 0.58rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.7;
+  line-height: 1;
+}
+
+.seq-chip__num {
+  --size: 60px;
+  position: relative;
+  width: var(--size); height: var(--size);
+  display: inline-grid; place-items: center;
+  font-family: var(--font-display);
+  font-weight: 400;
+  /* Auto-shrinks for 3-digit (777) via CSS only */
+  font-size: clamp(0.95rem, 1.4rem, 1.5rem);
+  letter-spacing: 0.04em;
+  color: var(--vellum);
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255,240,200,0.2), transparent 55%),
+    radial-gradient(circle at 70% 80%, rgba(212,168,87,0.18), transparent 55%),
+    linear-gradient(160deg, #16194a 0%, #0d0f33 100%);
+  border-radius: 50%;
+  border: 1px solid rgba(212,168,87,0.55);
+  cursor: pointer;
+  font-variant-numeric: lining-nums tabular-nums;
+  box-shadow:
+    0 0 0 1px rgba(212,168,87,0.12) inset,
+    0 8px 16px -6px rgba(0,0,0,0.55);
+  transition: transform 0.35s cubic-bezier(.2,.7,.2,1),
+              border-color 0.35s, box-shadow 0.35s;
+}
+.seq-chip__num::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  border: 0.5px solid rgba(212,168,87,0.35);
+  pointer-events: none;
+}
+/* Tighter font for 3-digit numbers so they don't crowd the medallion */
+.seq-chip__num[data-len="3"] {
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+.seq-chip__num:hover,
+.seq-chip__num:focus-visible {
+  transform: translateY(-3px);
+  border-color: var(--gold-bright);
+  box-shadow:
+    0 0 0 1px rgba(236,200,121,0.3) inset,
+    0 0 22px -2px rgba(236,200,121,0.5),
+    0 14px 24px -8px rgba(0,0,0,0.7);
+  outline: 0;
+}
+
+.seq-chip__remove {
+  position: absolute;
+  top: 14px; right: -6px;
+  width: 22px; height: 22px;
+  display: grid; place-items: center;
+  background: var(--ink);
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  color: var(--gold);
+  transition: transform 0.2s, color 0.2s, background 0.2s;
+  box-shadow: 0 0 0 2px var(--ink);
+}
+.seq-chip__remove:hover,
+.seq-chip__remove:focus-visible {
+  transform: scale(1.15);
+  color: var(--ink);
+  background: var(--gold-bright);
+  outline: 0;
+}
+.seq-chip__remove svg { width: 9px; height: 9px; }
+
+.sequence__hint {
+  margin: 1.1rem 0 0;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.88rem;
+  color: var(--vellum-soft);
+  opacity: 0.55;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* ── Drawer (dreams view) ─────────────────────────────────
+   Same chips, different shell: a fixed-bottom shelf that
+   slides up when the user adds a pick.
+   ───────────────────────────────────────────────────────── */
+.seq-drawer {
+  /* Lives at <body> level so no ancestor transform creates a containing
+     block — this is what makes `position: fixed; bottom: 0` truly pin
+     the drawer to the viewport on iOS Safari and beyond. */
+  position: fixed;
+  left: 0; right: 0;
+  bottom: 0;
+  z-index: 20;
+  display: none;             /* hidden by default; shown only on dreams view */
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(212,168,87,0.14) 0%, transparent 70%),
+    linear-gradient(180deg, rgba(28,23,80,0.78) 0%, rgba(6,8,31,0.92) 100%);
+  border-top: 1px solid rgba(212,168,87,0.4);
+  backdrop-filter: blur(16px) saturate(1.15);
+  -webkit-backdrop-filter: blur(16px) saturate(1.15);
+  box-shadow:
+    0 -20px 40px -20px rgba(0,0,0,0.7),
+    0 -1px 0 rgba(212,168,87,0.08) inset;
+  padding-bottom: var(--safe-bottom);
+  transform: translateY(0);
+}
+body[data-active-view="dreams"] .seq-drawer { display: block; animation: drawerIn 0.5s cubic-bezier(.2,.7,.2,1); }
+.seq-drawer[hidden] { display: none !important; }
+
+@keyframes drawerIn {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+/* Thin gold rule that hangs above the drawer bar */
+.seq-drawer__rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212,168,87,0.55), transparent);
+  margin: 0 var(--pad);
+  opacity: 0.7;
+}
+
+.seq-drawer__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem var(--pad);
+  max-width: var(--max);
+  margin: 0 auto;
+}
+.seq-drawer__toggle {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.35rem 0.25rem;
+  color: var(--vellum);
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+.seq-drawer__toggle:hover,
+.seq-drawer__toggle:focus-visible { color: var(--gold-bright); outline: 0; }
+
+.seq-drawer__chevron {
+  flex: 0 0 auto;
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  color: var(--gold);
+  border: 1px solid rgba(212,168,87,0.4);
+  border-radius: 50%;
+  transition: transform 0.4s cubic-bezier(.2,.7,.2,1), border-color 0.3s, background 0.3s;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255,240,200,0.12), transparent 60%),
+    linear-gradient(160deg, #16194a 0%, #0a0d2a 100%);
+}
+.seq-drawer__chevron svg { width: 14px; height: 8px; }
+.seq-drawer[data-state="collapsed"] .seq-drawer__chevron { transform: rotate(180deg); }
+
+.seq-drawer__title { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.1rem; }
+.seq-drawer__eyebrow {
+  font-family: var(--font-serif);
+  font-size: 0.7rem;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.seq-drawer .sequence__count {
+  font-family: var(--font-serif);
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--vellum-soft);
+  opacity: 0.7;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.seq-drawer__clear {
+  flex: 0 0 auto;
+}
+
+.seq-drawer__body {
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(.2,.7,.2,1), opacity 0.4s ease;
+  padding: 0 var(--pad);
+}
+.seq-drawer[data-state="expanded"] .seq-drawer__body {
+  max-height: 50dvh;
+  opacity: 1;
+  padding-bottom: 1rem;
+}
+.seq-drawer[data-state="collapsed"] .seq-drawer__body {
+  max-height: 0;
+  opacity: 0;
+  padding-bottom: 0;
+}
+
+.seq-drawer .sequence__list {
+  padding: 0.4rem 0.1rem 0.2rem;
+  max-width: var(--max);
+  margin: 0 auto;
+  /* Horizontal scroll on overflow so chips don't wrap and double the drawer height */
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  /* hide scrollbar — chip widths give the affordance */
+  scrollbar-width: none;
+}
+.seq-drawer .sequence__list::-webkit-scrollbar { display: none; }
+
+/* Empty-state hint in the drawer */
+.seq-drawer__empty {
+  margin: 0.85rem 0 0.4rem;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--vellum-soft);
+  opacity: 0.7;
+  text-align: center;
+  text-wrap: balance;
+  max-width: var(--max);
+  margin-left: auto;
+  margin-right: auto;
+}
+body[data-has-sequence] .seq-drawer__empty { display: none; }
+
+/* Drawer is always pinned at the bottom of the dreams view; the .suenos
+   pads itself enough that content is never trapped under it. */
+.suenos { padding-bottom: var(--drawer-clearance, 84px); }
+body[data-drawer-state="expanded"] .suenos { --drawer-clearance: 240px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .seq-drawer { animation: none; }
+  .seq-drawer__body { transition: none; }
+}
+
+/* ── Confirm dialog — destructive actions require an explicit yes ── */
+.confirm {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(360px, calc(100vw - 2rem));
+  max-height: calc(100dvh - 2rem - var(--safe-top) - var(--safe-bottom));
+  height: max-content;
+  border: 1px solid rgba(212,168,87,0.5);
+  background:
+    radial-gradient(ellipse at top, rgba(212,168,87,0.1) 0%, transparent 60%),
+    linear-gradient(180deg, #15184a 0%, #0a0d2a 100%);
+  color: var(--vellum);
+  padding: 2.25rem 1.5rem 1.5rem;
+  border-radius: 4px;
+  text-align: center;
+  box-shadow:
+    0 0 0 1px rgba(212,168,87,0.15),
+    0 30px 80px -10px rgba(0,0,0,0.8),
+    0 0 60px -10px rgba(212,168,87,0.18);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(.2,.7,.2,1);
+}
+.confirm[open] { opacity: 1; transform: translateY(0); }
+.confirm::backdrop {
+  background: radial-gradient(circle at center, rgba(10,13,42,0.65), rgba(0,0,0,0.85));
+  backdrop-filter: blur(4px);
+}
+.confirm::before, .confirm::after {
+  content: ""; position: absolute;
+  width: 18px; height: 18px;
+  border: 1px solid var(--gold);
+  opacity: 0.55;
+}
+.confirm::before { top: 8px; left: 8px;     border-right: 0; border-bottom: 0; }
+.confirm::after  { bottom: 8px; right: 8px; border-left: 0;  border-top: 0; }
+
+.confirm__eyebrow {
+  font-family: var(--font-serif);
+  font-size: 0.62rem;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 0.6rem;
+  opacity: 0.85;
+}
+.confirm__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2rem);
+  line-height: 1.1;
+  margin: 0 0 0.5rem;
+  color: var(--vellum);
+  text-wrap: balance;
+}
+.confirm__body {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.45;
+  color: var(--vellum-soft);
+  margin: 0 0 1.5rem;
+  text-wrap: balance;
+  opacity: 0.85;
+}
+.confirm__body[hidden] { display: none; }
+
+.confirm__actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+.confirm__btn {
+  flex: 1;
+  position: relative;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-serif);
+  font-size: 0.7rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  background:
+    radial-gradient(ellipse at top, rgba(212,168,87,0.08) 0%, transparent 70%),
+    linear-gradient(180deg, rgba(28,23,80,0.36) 0%, rgba(10,13,42,0.5) 100%);
+  border: 1px solid rgba(212,168,87,0.4);
+  cursor: pointer;
+  transition: color 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+}
+.confirm__btn::before,
+.confirm__btn::after {
+  content: ""; position: absolute; top: 50%;
+  width: 6px; height: 6px;
+  border: 1px solid currentColor;
+  transform: translateY(-50%) rotate(45deg);
+  background: var(--ink);
+}
+.confirm__btn::before { left: -4px; }
+.confirm__btn::after  { right: -4px; }
+.confirm__btn:hover,
+.confirm__btn:focus-visible {
+  transform: translateY(-1px);
+  outline: 0;
+}
+.confirm__btn--cancel { color: var(--vellum-soft); border-color: rgba(240,227,192,0.35); }
+.confirm__btn--cancel:hover,
+.confirm__btn--cancel:focus-visible {
+  color: var(--vellum);
+  border-color: var(--vellum);
+  box-shadow: 0 0 20px -6px rgba(240,227,192,0.35);
+}
+.confirm__btn--confirm { color: var(--rose); border-color: rgba(201,126,126,0.5); }
+.confirm__btn--confirm:hover,
+.confirm__btn--confirm:focus-visible {
+  color: #e29a9a;
+  border-color: #e29a9a;
+  box-shadow: 0 0 22px -4px rgba(226,154,154,0.45);
+}
+
+/* ── Dialog action button — add/remove the current number ─────── */
+.numero__add {
+  display: inline-block;
+  margin: 1.6rem auto 0;
+  padding: 0.7rem 1.6rem;
+  font-family: var(--font-serif);
+  font-size: 0.7rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background:
+    radial-gradient(ellipse at top, rgba(212,168,87,0.12) 0%, transparent 70%),
+    linear-gradient(180deg, rgba(28,23,80,0.4) 0%, rgba(10,13,42,0.55) 100%);
+  border: 1px solid rgba(212,168,87,0.45);
+  position: relative;
+  cursor: pointer;
+  transition: color 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+}
+.numero__add::before,
+.numero__add::after {
+  content: ""; position: absolute; top: 50%;
+  width: 7px; height: 7px;
+  border: 1px solid var(--gold);
+  transform: translateY(-50%) rotate(45deg);
+  background: var(--ink);
+}
+.numero__add::before { left: -4px; }
+.numero__add::after  { right: -4px; }
+.numero__add:hover:not(:disabled),
+.numero__add:focus-visible:not(:disabled) {
+  color: var(--gold-bright);
+  border-color: var(--gold-bright);
+  box-shadow: 0 0 22px -4px rgba(236,200,121,0.4);
+  transform: translateY(-1px);
+  outline: 0;
+}
+.numero__add:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.numero__add[data-action="remove"] {
+  color: var(--rose);
+  border-color: rgba(201,126,126,0.5);
+}
+.numero__add[data-action="remove"]::before,
+.numero__add[data-action="remove"]::after {
+  border-color: var(--rose);
 }
