@@ -853,10 +853,14 @@ body[data-active-view="home"]   [data-view="dreams"] { display: none; }
   opacity: 0.85;
 }
 
-/* Sticky search bar with backdrop fade */
+/* Sticky search bar with backdrop fade.
+   Respects the iPhone safe-area-top so the magnifier and placeholder
+   never park behind the Dynamic Island / notch camera. The pseudo-
+   element above keeps the notch zone covered with the same fade so
+   the transition under the cutout feels continuous, not gappy. */
 .suenos__search-wrap {
   position: sticky;
-  top: 0;
+  top: var(--safe-top);
   z-index: 5;
   padding: 0.75rem 0 1rem;
   margin: 0 0 0.5rem;
@@ -868,6 +872,20 @@ body[data-active-view="home"]   [data-view="dreams"] { display: none; }
       rgba(6,8,31,0) 100%);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+}
+.suenos__search-wrap::before {
+  /* Fills the safe-area-top strip above the sticky bar with the same
+     ink fade, so content scrolling underneath the notch reads as
+     "behind the device chrome" rather than abruptly cut. */
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  bottom: 100%;
+  height: var(--safe-top);
+  background: rgba(6,8,31,0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  pointer-events: none;
 }
 .suenos__search {
   position: relative;
