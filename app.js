@@ -323,12 +323,14 @@ function renderGames() {
 }
 
 // ── NUMEROLOGY DIALOG ────────────────────────────────────────
-const dialog   = document.getElementById("numero-dialog");
-const dlgTitle = document.getElementById("numero-title");
-const dlgRed   = document.getElementById("numero-reduction");
-const dlgKeys  = document.getElementById("numero-keywords");
-const dlgBody  = document.getElementById("numero-body");
-const dlgSigil = document.getElementById("numero-sigil");
+const dialog       = document.getElementById("numero-dialog");
+const dlgTitle     = document.getElementById("numero-title");
+const dlgRed       = document.getElementById("numero-reduction");
+const dlgKeys      = document.getElementById("numero-keywords");
+const dlgBody      = document.getElementById("numero-body");
+const dlgSigil     = document.getElementById("numero-sigil");
+const dlgDream     = document.getElementById("numero-dream");
+const dlgDreamName = document.getElementById("numero-dream-name");
 
 function openNumero(n) {
   const reduced = reduceNumber(n);
@@ -351,12 +353,27 @@ function openNumero(n) {
   dlgKeys.textContent = entry.keywords;
   dlgBody.textContent = entry.body;
 
+  // Associated quiniela dream — check the table that matches the number's range.
+  let dream;
+  if (n >= 0 && n <= 99) {
+    dream = SUENOS_TWO.find(([num]) => num === String(n).padStart(2, "0"))?.[1];
+  } else if (n >= 100 && n <= 999) {
+    dream = SUENOS_THREE.find(([num]) => num === String(n).padStart(3, "0"))?.[1];
+  }
+  if (dream) {
+    dlgDreamName.textContent = dream;
+    dlgDream.hidden = false;
+  } else {
+    dlgDreamName.textContent = "";
+    dlgDream.hidden = true;
+  }
+
   if (typeof dialog.showModal === "function") dialog.showModal();
   else dialog.setAttribute("open", "");
 }
 
 document.addEventListener("click", (ev) => {
-  const btn = ev.target.closest(".num");
+  const btn = ev.target.closest(".num, .sueno__face, .sueno-row__btn");
   if (btn) { openNumero(Number(btn.dataset.number)); return; }
   if (ev.target.closest("[data-close]")) { dialog.close(); return; }
   if (ev.target === dialog) dialog.close();
@@ -366,9 +383,378 @@ document.addEventListener("keydown", (ev) => {
   if (ev.key === "Escape" && dialog.open) dialog.close();
 });
 
+// ── SUEÑOS · Tabla de los sueños (Quiniela, two-digit) ───────
+// Each entry: [number, name, iconKey]. iconKey references ICONS below.
+// 'rosette' is the placeholder ornament for entries whose bespoke
+// line-art icon has not been drawn yet.
+const SUENOS_TWO = [
+  ["00", "Los huevos",         "huevos"],
+  ["01", "El agua",            "agua"],
+  ["02", "El niño",            "nino"],
+  ["03", "San Cono",           "sancono"],
+  ["04", "La cama",            "cama"],
+  ["05", "El gato",            "gato"],
+  ["06", "El perro",           "perro"],
+  ["07", "El revólver",        "revolver"],
+  ["08", "El incendio",        "fuego"],
+  ["09", "El arroyo",          "arroyo"],
+  ["10", "El león",            "leon"],
+  ["11", "El elefante",        "elefante"],
+  ["12", "El soldado",         "soldado"],
+  ["13", "La yeta",            "yeta"],
+  ["14", "El borracho",        "copa"],
+  ["15", "La niña bonita",     "rosa"],
+  ["16", "El anillo",          "anillo"],
+  ["17", "La desgracia",       "rosette"],
+  ["18", "La sangre",          "sangre"],
+  ["19", "El pescado",         "pez"],
+  ["20", "La fiesta",          "fiesta"],
+  ["21", "La mujer",           "mujer"],
+  ["22", "El loco",            "loco"],
+  ["23", "El cocinero",        "cocinero"],
+  ["24", "El caballo",         "caballo"],
+  ["25", "El gallo",           "gallo"],
+  ["26", "La misa",            "misa"],
+  ["27", "El peine",           "peine"],
+  ["28", "El cerro",           "cerro"],
+  ["29", "San Pedro",          "llaves"],
+  ["30", "Santa Rosa",         "rosa"],
+  ["31", "El barco",           "barco"],
+  ["32", "El dinero",          "moneda"],
+  ["33", "Cristo",             "cruz"],
+  ["34", "La cabeza",          "cabeza"],
+  ["35", "El pajarito",        "pajaro"],
+  ["36", "La manteca",         "manteca"],
+  ["37", "El dentista",        "diente"],
+  ["38", "La piedra",          "piedra"],
+  ["39", "La lluvia",          "lluvia"],
+  ["40", "El cura",            "rosette"],
+  ["41", "El cuchillo",        "cuchillo"],
+  ["42", "El zapato",          "zapato"],
+  ["43", "El balcón",          "rosette"],
+  ["44", "La cárcel",          "rosette"],
+  ["45", "El vino",            "copa"],
+  ["46", "Los tomates",        "tomate"],
+  ["47", "El muerto que habla","calavera"],
+  ["48", "El muerto",          "tumba"],
+  ["49", "La carne",           "rosette"],
+  ["50", "El pan",             "pan"],
+  ["51", "El serrucho",        "rosette"],
+  ["52", "La madre",           "rosette"],
+  ["53", "El buque",           "barco"],
+  ["54", "La vaca",            "vaca"],
+  ["55", "La música",          "nota"],
+  ["56", "La caída",           "caida"],
+  ["57", "El jorobado",        "jorobado"],
+  ["58", "El ahogado",         "agua"],
+  ["59", "La rueda",           "rueda"],
+  ["60", "La virgen",          "virgen"],
+  ["61", "La escopeta",        "rosette"],
+  ["62", "La inundación",      "agua"],
+  ["63", "El casamiento",      "anillo"],
+  ["64", "El llanto",          "rosette"],
+  ["65", "El cazador",         "arco"],
+  ["66", "La lombriz",         "lombriz"],
+  ["67", "El mordisco",        "rosette"],
+  ["68", "Los sobrinos",       "rosette"],
+  ["69", "Los vicios",         "dados"],
+  ["70", "El muerto",          "tumba"],
+  ["71", "El excremento",      "rosette"],
+  ["72", "El asombro",         "rosette"],
+  ["73", "El hospital",        "cruz"],
+  ["74", "La gente negra",     "rosette"],
+  ["75", "Los pescados",       "pez"],
+  ["76", "Las llamas",         "fuego"],
+  ["77", "Las piernas",        "rosette"],
+  ["78", "La ramera",          "rosa"],
+  ["79", "El ladrón",          "rosette"],
+  ["80", "La bocha",           "rosette"],
+  ["81", "Las flores",         "rosa"],
+  ["82", "La riña",            "cuchillo"],
+  ["83", "El mal tiempo",      "lluvia"],
+  ["84", "La iglesia",         "iglesia"],
+  ["85", "La linterna",        "lampara"],
+  ["86", "El humo",            "rosette"],
+  ["87", "Los piojos",         "rosette"],
+  ["88", "El papel",           "rosette"],
+  ["89", "La medida",          "rosette"],
+  ["90", "El abuelo",          "rosette"],
+  ["91", "El sapo",            "sapo"],
+  ["92", "El médico",          "cruz"],
+  ["93", "El enamorado",       "enamorado"],
+  ["94", "El plumero",         "plumero"],
+  ["95", "El anillo de bodas", "anillo"],
+  ["96", "El marido",          "sombrero"],
+  ["97", "La mesa",            "mesa"],
+  ["98", "La cárcel",          "rosette"],
+  ["99", "El hermano",         "rosette"],
+];
+
+// Inline SVG icon library. 32×32 viewBox, currentColor strokes.
+const ICONS = {
+  huevos:   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"><ellipse cx="12" cy="18" rx="6" ry="8"/><ellipse cx="21" cy="14" rx="5.5" ry="7.5"/><path d="M12 12 Q14 14 12 16" opacity="0.5"/></g></svg>`,
+  agua:     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"><path d="M3 11 Q8 7 13 11 T23 11 T29 11"/><path d="M3 17 Q8 13 13 17 T23 17 T29 17"/><path d="M3 23 Q8 19 13 23 T23 23 T29 23"/></g></svg>`,
+  nino:     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="9" r="3.5"/><path d="M16 13 L16 22 M16 16 L11 20 M16 16 L21 20 M16 22 L13 28 M16 22 L19 28"/></g></svg>`,
+  sancono:  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4 L23 14 Q23 22 16 27 Q9 22 9 14 Z"/><path d="M16 10 L16 22 M12 14 L20 14"/></g></svg>`,
+  cama:     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"><path d="M4 22 H28 M4 22 V14 H12 V19 H28 V22 M28 22 V14"/><path d="M4 25 V28 M28 25 V28"/><circle cx="9" cy="16" r="1.4"/></g></svg>`,
+  gato:     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 11 L10 5 L14 9 H18 L22 5 L24 11"/><ellipse cx="16" cy="18" rx="9" ry="8"/><circle cx="13" cy="17" r="0.7" fill="currentColor"/><circle cx="19" cy="17" r="0.7" fill="currentColor"/><path d="M14 21 Q16 23 18 21"/><path d="M10 19 L7 19 M22 19 L25 19" opacity="0.6"/></g></svg>`,
+  perro:    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9 L9 16 L7 22 L11 23 L13 18 H19 L21 23 L25 22 L23 16 L25 9 L22 12 L19 11 H13 L10 12 Z"/><circle cx="14" cy="16" r="0.6" fill="currentColor"/><circle cx="20" cy="16" r="0.6" fill="currentColor"/></g></svg>`,
+  revolver: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14 H22 L22 11 L28 11 L28 16 L22 16 L22 18 L16 18 L14 23 L10 23 L11 18 L4 18 Z"/><circle cx="11" cy="16" r="2.5"/></g></svg>`,
+  fuego:    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4 Q20 10 21 14 Q26 18 22 25 Q19 29 16 28 Q13 29 10 25 Q6 18 11 14 Q14 11 16 4 Z"/><path d="M16 14 Q19 18 17 23 Q15 25 13 22 Q12 18 16 14 Z" fill="currentColor" fill-opacity="0.18"/></g></svg>`,
+  arroyo:   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"><path d="M5 7 Q10 14 7 19 Q4 24 9 28"/><path d="M14 5 Q19 12 16 17 Q13 22 18 27" opacity="0.75"/><path d="M23 7 Q28 14 25 19 Q22 24 27 28" opacity="0.5"/></g></svg>`,
+  leon:     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="16" r="6"/><g stroke-width="0.8"><line x1="16" y1="3" x2="16" y2="7"/><line x1="16" y1="25" x2="16" y2="29"/><line x1="3" y1="16" x2="7" y2="16"/><line x1="25" y1="16" x2="29" y2="16"/><line x1="7" y1="7" x2="10" y2="10"/><line x1="22" y1="22" x2="25" y2="25"/><line x1="25" y1="7" x2="22" y2="10"/><line x1="10" y1="22" x2="7" y2="25"/></g><circle cx="13.5" cy="15" r="0.7" fill="currentColor"/><circle cx="18.5" cy="15" r="0.7" fill="currentColor"/><path d="M13 19 Q16 21 19 19"/></g></svg>`,
+  elefante: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18 Q5 10 13 9 Q21 9 23 14 L26 14 Q28 14 28 17 Q27 19 24 19 L24 24 H21 V21 H14 V24 H11 V21 Q7 22 5 18 Z"/><path d="M20 14 Q23 17 21 22 Q19 24 19 21"/><circle cx="11" cy="14" r="0.7" fill="currentColor"/></g></svg>`,
+  soldado:  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 18 Q8 8 16 8 Q24 8 24 18 L24 21 H8 Z"/><path d="M16 6 V8 M14 21 V25 H18 V21"/><line x1="8" y1="18" x2="24" y2="18"/></g></svg>`,
+  yeta:     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8 Q8 22 16 26 Q24 22 24 8 L20 8 L20 20 Q17 22 16 22 Q15 22 12 20 L12 8 Z"/><circle cx="10" cy="10" r="0.6" fill="currentColor"/><circle cx="22" cy="10" r="0.6" fill="currentColor"/><circle cx="14" cy="11" r="0.5" fill="currentColor"/><circle cx="18" cy="11" r="0.5" fill="currentColor"/></g></svg>`,
+  rosa:     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="13" r="6"/><path d="M16 9 Q19 11 18 14 Q16 16 14 14 Q13 11 16 9 Z" fill="currentColor" fill-opacity="0.16"/><path d="M12 17 Q10 22 14 25 M20 17 Q22 22 18 25 M16 19 V28"/></g></svg>`,
+  anillo:   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="19" r="7"/><path d="M12 12 L16 6 L20 12 Z"/><circle cx="16" cy="9" r="0.8" fill="currentColor"/></g></svg>`,
+  sangre:   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4 Q23 14 23 20 Q23 27 16 27 Q9 27 9 20 Q9 14 16 4 Z"/><path d="M13 19 Q12 22 14 24" opacity="0.6"/></g></svg>`,
+  pez:      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16 Q11 8 20 12 Q26 14 27 16 Q26 18 20 20 Q11 24 5 16 Z M27 16 L31 12 M27 16 L31 20"/><circle cx="22" cy="15" r="0.8" fill="currentColor"/><path d="M11 14 Q12 16 11 18" opacity="0.6"/></g></svg>`,
+  fiesta:   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4 L7 26 L25 26 Z"/><circle cx="16" cy="4" r="1.4" fill="currentColor"/><circle cx="12" cy="14" r="0.7" fill="currentColor"/><circle cx="20" cy="18" r="0.7" fill="currentColor"/><circle cx="16" cy="22" r="0.7" fill="currentColor"/></g></svg>`,
+  mujer:    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="8" r="3.5"/><path d="M16 11.5 L16 17 M10 17 H22 L19 27 H13 Z M16 17 L16 22"/></g></svg>`,
+  loco:     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 Q8 7 11 5 L13 11 L16 4 L19 11 L21 5 Q24 7 23 14 Z"/><circle cx="11" cy="5" r="1" fill="currentColor"/><circle cx="16" cy="4" r="1" fill="currentColor"/><circle cx="21" cy="5" r="1" fill="currentColor"/><circle cx="16" cy="20" r="5"/><circle cx="14" cy="19" r="0.6" fill="currentColor"/><circle cx="18" cy="19" r="0.6" fill="currentColor"/><path d="M14 22 Q16 23 18 22"/></g></svg>`,
+  cocinero: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 16 Q4 16 5 11 Q4 6 10 7 Q10 4 16 4 Q22 4 22 7 Q28 6 27 11 Q28 16 23 16 L22 22 H10 Z"/><line x1="10" y1="22" x2="22" y2="22"/><line x1="14" y1="22" x2="14" y2="26"/><line x1="18" y1="22" x2="18" y2="26"/></g></svg>`,
+  caballo:  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 26 Q5 18 10 14 Q12 11 11 8 Q14 9 14 11 Q18 8 22 9 Q26 11 26 17 Q26 23 24 26"/><path d="M14 11 L13 7 L17 9"/><circle cx="20" cy="14" r="0.7" fill="currentColor"/></g></svg>`,
+  gallo:    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 7 L17 4 L15 7 L13 4 L13 9 Q9 11 9 17 Q9 23 14 24 L15 28 H18 L18 24 Q23 23 22 17 L25 16 L21 13"/><circle cx="13" cy="15" r="0.6" fill="currentColor"/><path d="M22 17 L26 18" opacity="0.6"/></g></svg>`,
+  misa:     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6 H22 Q22 14 16 16 Q10 14 10 6 Z"/><line x1="16" y1="16" x2="16" y2="24"/><line x1="11" y1="24" x2="21" y2="24"/><path d="M10 6 L9 4 M22 6 L23 4" opacity="0.6"/></g></svg>`,
+  peine:    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"><rect x="5" y="9" width="22" height="6" rx="0.5"/><line x1="8" y1="15" x2="8" y2="23"/><line x1="12" y1="15" x2="12" y2="23"/><line x1="16" y1="15" x2="16" y2="23"/><line x1="20" y1="15" x2="20" y2="23"/><line x1="24" y1="15" x2="24" y2="23"/></g></svg>`,
+  cerro:    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 25 L11 13 L17 20 L21 15 L29 25 Z"/><circle cx="22" cy="8" r="2.5"/><line x1="11" y1="13" x2="13" y2="16" opacity="0.5"/></g></svg>`,
+  llaves:   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="10" r="4"/><path d="M12 12 L24 24 M20 20 L23 17 M22 22 L25 19"/><circle cx="9" cy="10" r="1.4" fill="currentColor"/></g></svg>`,
+  barco:    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22 L29 22 L26 27 L6 27 Z"/><path d="M16 22 L16 4 L25 18 L16 18"/><path d="M16 8 L10 18 L16 18"/></g></svg>`,
+  moneda:   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="16" r="9"/><circle cx="13" cy="16" r="6" opacity="0.5"/><path d="M13 12 V20 M11 14 H15 M11 18 H15"/><circle cx="22" cy="11" r="5" opacity="0.4"/></g></svg>`,
+  cruz:     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4 L16 28 M8 11 L24 11"/><circle cx="16" cy="11" r="4" opacity="0.4"/></g></svg>`,
+  cabeza:   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 6 Q11 6 11 16 L8 19 L11 21 L11 24 Q11 27 14 27 L18 27"/><circle cx="15" cy="16" r="0.7" fill="currentColor"/><path d="M18 18 Q19 19 18 20" opacity="0.7"/></g></svg>`,
+  pajaro:   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18 Q8 12 14 12 L18 8 L18 12 Q24 13 26 18 L24 22 L20 22 L18 26 L16 22 L11 22 L8 25 Z"/><circle cx="20" cy="14" r="0.6" fill="currentColor"/></g></svg>`,
+  manteca:  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22 L27 22 L24 12 L8 12 Z"/><path d="M8 12 L12 8 L20 8 L24 12"/><line x1="11" y1="22" x2="13" y2="12" opacity="0.5"/><line x1="21" y1="22" x2="19" y2="12" opacity="0.5"/></g></svg>`,
+  diente:   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6 Q8 14 11 22 Q12 27 14 27 Q15 22 16 22 Q17 22 18 27 Q20 27 21 22 Q24 14 22 6 Q19 4 16 6 Q13 4 10 6 Z"/></g></svg>`,
+  piedra:   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 23 L10 9 L18 7 L25 12 L27 22 L19 27 L9 26 Z"/><path d="M10 9 L18 14 L25 12 M18 14 L19 27" opacity="0.5"/></g></svg>`,
+  lluvia:   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 12 Q5 18 11 18 H21 Q27 18 25 12 Q24 8 19 9 Q17 5 12 7 Q7 8 7 12 Z"/><line x1="10" y1="22" x2="9" y2="26"/><line x1="16" y1="22" x2="15" y2="27"/><line x1="22" y1="22" x2="21" y2="26"/></g></svg>`,
+  cuchillo: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22 L22 8 L26 11 L24 13 L7 26 Z"/><path d="M22 8 L24 6 L26 8 L26 11" opacity="0.6"/></g></svg>`,
+  zapato:   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22 Q4 14 8 14 L14 14 L18 10 L23 12 L27 18 L27 22 L24 24 L4 24 Z"/><line x1="9" y1="14" x2="9" y2="20" opacity="0.6"/><line x1="14" y1="14" x2="15" y2="20" opacity="0.6"/></g></svg>`,
+  copa:     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5 L23 5 L21 14 Q21 20 16 20 Q11 20 11 14 Z"/><line x1="16" y1="20" x2="16" y2="26"/><line x1="11" y1="26" x2="21" y2="26"/><path d="M11 12 H21" opacity="0.5"/></g></svg>`,
+  tomate:   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="18" r="9"/><path d="M16 9 L13 5 M16 9 L19 5 M16 9 L16 5 M12 11 Q16 13 20 11"/></g></svg>`,
+  calavera: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14 Q7 5 16 5 Q25 5 25 14 L25 19 L21 21 L21 24 H11 L11 21 L7 19 Z"/><circle cx="12.5" cy="15" r="1.6" fill="currentColor" fill-opacity="0.2"/><circle cx="19.5" cy="15" r="1.6" fill="currentColor" fill-opacity="0.2"/><path d="M14 20 L15 18 L17 18 L18 20"/></g></svg>`,
+  tumba:    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 26 V14 Q9 8 16 8 Q23 8 23 14 V26 Z"/><line x1="5" y1="26" x2="27" y2="26"/><path d="M16 14 V20 M13 17 H19"/></g></svg>`,
+  pan:      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16 Q5 9 13 9 Q14 7 17 7 Q20 7 21 9 Q27 9 27 16 Q27 22 22 22 L10 22 Q5 22 5 16 Z"/><path d="M9 15 L11 19 M14 13 L15 19 M19 13 L19 19 M23 15 L22 19" opacity="0.5"/></g></svg>`,
+  vaca:     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16 Q5 9 9 8 L11 11 H21 L23 8 Q27 9 26 16 Q26 22 16 23 Q6 22 6 16 Z"/><circle cx="13" cy="15" r="0.7" fill="currentColor"/><circle cx="19" cy="15" r="0.7" fill="currentColor"/><path d="M15 19 L17 19" opacity="0.7"/><circle cx="22" cy="6" r="0.8"/><circle cx="10" cy="6" r="0.8"/></g></svg>`,
+  nota:     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="23" r="3.5"/><circle cx="22" cy="20" r="3.5"/><path d="M14.5 23 L14.5 7 L25.5 5 L25.5 20"/><path d="M14.5 11 L25.5 9" opacity="0.5"/></g></svg>`,
+  caida:    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M9 11 L11 17 L16 19 L20 24 L26 22 M11 17 L7 22"/><path d="M14 5 L18 7 L16 11" opacity="0.6"/></g></svg>`,
+  jorobado: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="7" r="3"/><path d="M11 10 Q9 14 14 16 Q12 22 9 28 M14 16 L20 14 L18 22 L24 28 M14 16 Q18 12 23 15"/></g></svg>`,
+  rueda:    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="16" r="11"/><circle cx="16" cy="16" r="2.2"/><line x1="16" y1="5" x2="16" y2="27"/><line x1="5" y1="16" x2="27" y2="16"/><line x1="8" y1="8" x2="24" y2="24" opacity="0.6"/><line x1="24" y1="8" x2="8" y2="24" opacity="0.6"/></g></svg>`,
+  virgen:   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="7" r="2.8"/><circle cx="16" cy="7" r="5.5" opacity="0.5"/><path d="M10 11 Q10 18 11 25 H21 Q22 18 22 11 Q19 9 16 9 Q13 9 10 11 Z"/><path d="M14 16 L18 16" opacity="0.6"/></g></svg>`,
+  arco:     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 5 Q26 16 6 27"/><path d="M6 5 Q4 16 6 27" opacity="0.5"/><line x1="8" y1="16" x2="28" y2="16"/><path d="M28 16 L24 13 M28 16 L24 19"/></g></svg>`,
+  lombriz:  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22 Q9 18 13 22 Q17 26 21 22 Q25 18 29 22"/><path d="M5 16 Q9 12 13 16 Q17 20 21 16 Q25 12 29 16" opacity="0.7"/><path d="M5 10 Q9 6 13 10 Q17 14 21 10 Q25 6 29 10" opacity="0.4"/></g></svg>`,
+  dados:    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="13" width="13" height="13" rx="1.5"/><rect x="15" y="6" width="13" height="13" rx="1.5"/><circle cx="8" cy="17" r="1" fill="currentColor"/><circle cx="13" cy="22" r="1" fill="currentColor"/><circle cx="19" cy="10" r="1" fill="currentColor"/><circle cx="24" cy="10" r="1" fill="currentColor"/><circle cx="19" cy="15" r="1" fill="currentColor"/><circle cx="24" cy="15" r="1" fill="currentColor"/></g></svg>`,
+  iglesia:  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3 V8 M14 5 H18"/><path d="M16 8 L8 16 L8 26 L24 26 L24 16 Z"/><path d="M13 26 V20 H19 V26"/><circle cx="16" cy="16" r="2" opacity="0.6"/></g></svg>`,
+  lampara:  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4 L16 7 M13 7 L19 7 L21 12 L23 12 L23 22 L21 22 L19 27 L13 27 L11 22 L9 22 L9 12 L11 12 Z"/><path d="M14 14 L18 14 L18 20 L14 20 Z" fill="currentColor" fill-opacity="0.2"/></g></svg>`,
+  sapo:     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18 Q3 10 10 9 Q11 5 16 5 Q21 5 22 9 Q29 10 27 18 Q27 24 21 25 H11 Q5 24 5 18 Z"/><circle cx="11" cy="12" r="2"/><circle cx="21" cy="12" r="2"/><circle cx="11" cy="12" r="0.7" fill="currentColor"/><circle cx="21" cy="12" r="0.7" fill="currentColor"/><path d="M12 19 Q16 22 20 19"/></g></svg>`,
+  enamorado:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 26 Q5 18 5 12 Q5 7 10 7 Q14 7 16 11 Q18 7 22 7 Q27 7 27 12 Q27 18 16 26 Z"/><path d="M3 6 L29 22" opacity="0.5"/><path d="M3 6 L7 5 L6 9 M29 22 L25 23 L26 19" opacity="0.6"/></g></svg>`,
+  plumero:  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4 L8 22"/><path d="M22 4 Q26 6 26 11 Q24 12 21 12 M22 4 Q19 4 18 8 Q21 9 24 9 M22 4 Q24 8 28 9 Q28 6 26 4"/><line x1="8" y1="22" x2="5" y2="28"/></g></svg>`,
+  sombrero: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 23 H29 M7 23 V14 H25 V23"/><path d="M9 14 V8 H23 V14" opacity="0.85"/><line x1="9" y1="11" x2="23" y2="11" opacity="0.5"/></g></svg>`,
+  mesa:     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 H28 L26 16 L6 16 Z"/><line x1="8" y1="16" x2="8" y2="26"/><line x1="24" y1="16" x2="24" y2="26"/><line x1="12" y1="14" x2="14" y2="14" opacity="0.5"/></g></svg>`,
+  rosette:  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"><circle cx="16" cy="16" r="8"/><circle cx="16" cy="16" r="4" opacity="0.6"/><path d="M16 4 L17 12 L24 13 L17 14 L16 28 L15 14 L8 13 L15 12 Z"/><circle cx="16" cy="16" r="1.2" fill="currentColor" stroke="none"/></g></svg>`,
+  // Small ornaments used to break visual monotony along the 1000-row table.
+  star6:     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 5 L19 13 L27 13 L20.5 18 L23 26 L16 21 L9 26 L11.5 18 L5 13 L13 13 Z"/></g></svg>`,
+  circleDot: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9"><circle cx="16" cy="16" r="9"/><circle cx="16" cy="16" r="2" fill="currentColor"/></g></svg>`,
+  sun:       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"><circle cx="16" cy="16" r="5"/><g><line x1="16" y1="3" x2="16" y2="7"/><line x1="16" y1="25" x2="16" y2="29"/><line x1="3" y1="16" x2="7" y2="16"/><line x1="25" y1="16" x2="29" y2="16"/><line x1="7" y1="7" x2="10" y2="10"/><line x1="22" y1="22" x2="25" y2="25"/><line x1="25" y1="7" x2="22" y2="10"/><line x1="10" y1="22" x2="7" y2="25"/></g></g></svg>`,
+  diamond:   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linejoin="round"><path d="M16 4 L26 16 L16 28 L6 16 Z"/><path d="M16 4 L19 10 L26 16 L19 22 L16 28 L13 22 L6 16 L13 10 Z" opacity="0.5"/></g></svg>`,
+  eye:       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16 Q10 7 16 7 Q22 7 29 16 Q22 25 16 25 Q10 25 3 16 Z"/><circle cx="16" cy="16" r="3.5"/><circle cx="16" cy="16" r="1.2" fill="currentColor"/></g></svg>`,
+  key:       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"><circle cx="9" cy="16" r="4"/><circle cx="9" cy="16" r="1.4" fill="currentColor"/><path d="M13 16 H26 M22 16 V20 M26 16 V19"/></g></svg>`,
+};
+
+// Rotating ornaments for the three-digit table.
+const TABLE_GLYPHS = ["star6", "circleDot", "diamond", "sun", "eye", "key"];
+
+// Three-digit quiniela dream table (Lotería del Uruguay).
+// Sparse — only the ~192 numbers that the canonical table assigns to a sueño.
+const SUENOS_THREE = [
+  ["001", "Tigre"],            ["004", "La cama"],          ["007", "Revólver"],
+  ["009", "Arroyo"],           ["026", "Mojarra"],          ["035", "Pajarito"],
+  ["056", "La caída"],         ["061", "Escopeta"],         ["065", "Cazador"],
+  ["073", "Hospital"],         ["080", "Apereá"],           ["098", "Araña"],
+  ["112", "Cucaracha"],        ["122", "Mariposa"],         ["130", "Ganso"],
+  ["139", "Lluvias"],          ["141", "Ratón"],            ["150", "Chinche"],
+  ["160", "Hipopótamo"],       ["170", "Langosta"],         ["175", "Sapo"],
+  ["190", "Chivo"],            ["202", "Niño"],             ["210", "Hormiga"],
+  ["214", "Borracho"],         ["215", "Rana"],             ["216", "Anguila"],
+  ["223", "Zorro"],            ["232", "Nutria"],           ["233", "Cristo"],
+  ["235", "Tordo"],            ["236", "Castaña"],          ["243", "Balcón"],
+  ["244", "Carnero"],          ["249", "La carne"],         ["252", "Corvina"],
+  ["255", "Murciélago"],       ["257", "Conejo"],           ["259", "Las plantas"],
+  ["260", "La Virgen"],        ["274", "Aguila"],           ["278", "Ramera"],
+  ["285", "Linterna"],         ["288", "Polilla"],          ["292", "Picaflor"],
+  ["294", "Cocodrilo"],        ["296", "Marido"],           ["297", "Mesa"],
+  ["301", "Agua"],             ["314", "Garrapata"],        ["317", "Cuervo"],
+  ["327", "Ciervo"],           ["332", "Dinero"],           ["338", "Piedras"],
+  ["339", "Gallineta"],        ["347", "Gorila"],           ["350", "El Pan"],
+  ["352", "Madre e hijo"],     ["356", "Carpincho"],        ["362", "Chingolo"],
+  ["367", "Tararira"],         ["374", "Gente negra"],      ["376", "Las llamas"],
+  ["379", "Ladrón"],           ["400", "Huevos"],           ["412", "Soldado"],
+  ["413", "Avestruz"],         ["418", "Víbora"],           ["422", "Loco"],
+  ["424", "Caballo"],          ["425", "Gallina"],          ["437", "Eucaliptus"],
+  ["438", "Gorrión"],          ["442", "Hornero"],          ["449", "Cerdo"],
+  ["465", "Mulita"],           ["467", "Mordida"],          ["476", "Golondrina"],
+  ["483", "Cigüeña"],          ["492", "Médico"],           ["504", "Lagarto"],
+  ["508", "Incendio"],         ["517", "Desgracia"],        ["523", "Cocinero"],
+  ["527", "El peine"],         ["537", "Oveja"],            ["541", "El cuchillo"],
+  ["546", "Lechuza"],          ["551", "Serrucho"],         ["564", "Tábano"],
+  ["566", "Lombriz"],          ["570", "Muerto sueña"],     ["572", "Cordero"],
+  ["579", "Cardenal"],         ["580", "La bocha"],         ["587", "Piojo"],
+  ["591", "Excusado"],         ["594", "Cementerio"],       ["598", "Lavandera"],
+  ["599", "Isoca-Vaquilla"],   ["607", "Pavo"],             ["611", "Minero"],
+  ["615", "Niña bonita"],      ["616", "Anillo"],           ["619", "Benteveo"],
+  ["629", "Pato"],             ["631", "Mosquito"],         ["634", "Tiburón"],
+  ["643", "Mosca"],            ["645", "El vino"],          ["648", "Muerto habla"],
+  ["658", "Ahogado"],          ["663", "Cangrejo"],         ["668", "Sobrinos"],
+  ["675", "Besos"],            ["681", "Jirafa"],           ["682", "La pelea"],
+  ["683", "Mal tiempo"],       ["684", "Chajá"],            ["686", "El humo"],
+  ["688", "El Papa"],          ["693", "Gallo"],            ["703", "La cruz"],
+  ["705", "Gato"],             ["709", "Camaleon"],         ["713", "La yeta"],
+  ["718", "Sangre"],           ["719", "Pescado"],          ["720", "Vaquillona"],
+  ["728", "Canario"],          ["733", "Ballena"],          ["740", "El cura"],
+  ["753", "El barco"],         ["755", "La música"],        ["757", "Jorobado"],
+  ["758", "Pulga"],            ["768", "Avispas"],          ["771", "Excremento"],
+  ["773", "Paloma"],           ["777", "Elefante"],         ["781", "Las flores"],
+  ["782", "Toro"],             ["784", "La iglesia"],       ["789", "Rata"],
+  ["793", "Enamorados"],       ["795", "Gusano"],           ["802", "Abeja"],
+  ["806", "Perro"],            ["810", "Cañón"],            ["821", "Mujer"],
+  ["826", "La misa"],          ["829", "San Pedro"],        ["830", "Santa Rosa"],
+  ["831", "La luz"],           ["848", "Liebre"],           ["853", "Burro"],
+  ["861", "Mono"],             ["869", "Vicios"],           ["872", "Sorpresa"],
+  ["885", "Oso"],              ["890", "El miedo"],         ["895", "Anteojos"],
+  ["896", "Tortuga"],          ["900", "Teru - teru"],      ["903", "Cotorra"],
+  ["908", "Caracol"],          ["911", "Perdiz"],           ["920", "La fiesta"],
+  ["921", "Buey"],             ["928", "El cerro"],         ["934", "La cabeza"],
+  ["936", "Grillo"],           ["940", "Novillo"],          ["942", "Zapatillas"],
+  ["944", "La cárcel"],        ["945", "Camello"],          ["946", "Tomates"],
+  ["947", "Muerto"],           ["951", "Lagartija"],        ["954", "Vaca"],
+  ["959", "Carancho"],         ["962", "Inundación"],       ["963", "Casamiento"],
+  ["964", "El llanto"],        ["969", "León"],             ["971", "Zorrillo"],
+  ["977", "Piernas mujer"],    ["978", "Comadreja"],        ["986", "Bagre"],
+  ["991", "Lobo"],             ["997", "Halcón"],           ["999", "Hermanos"],
+];
+
+// Parse once per icon, then clone — keeps 1000-row render fast.
+const _iconCache = Object.create(null);
+function iconNode(key) {
+  if (!_iconCache[key]) _iconCache[key] = svgNode(ICONS[key] || ICONS.rosette);
+  return _iconCache[key].cloneNode(true);
+}
+
+function renderSuenosTwo() {
+  const grid = document.getElementById("suenos-grid");
+  if (!grid) return;
+  const frag = document.createDocumentFragment();
+  for (const [num, name, iconKey] of SUENOS_TWO) {
+    const li = el("li", { class: "sueno", "data-search": `${num} ${name}`.toLowerCase() });
+
+    const btn = el("button", {
+      type: "button",
+      class: "sueno__face",
+      "aria-label": `Sueño ${num} · ${name}`,
+      "data-number": num,
+    });
+
+    const iconWrap = el("span", { class: "sueno__icon" });
+    iconWrap.appendChild(iconNode(iconKey));
+
+    const numEl = el("span", { class: "sueno__num", text: num });
+    btn.append(iconWrap, numEl);
+
+    const nameEl = el("p", { class: "sueno__name", text: name });
+    li.append(btn, nameEl);
+    frag.append(li);
+  }
+  grid.replaceChildren(frag);
+}
+
+function renderSuenosThree() {
+  const table = document.getElementById("suenos-table");
+  if (!table) return;
+  const frag = document.createDocumentFragment();
+  SUENOS_THREE.forEach(([num, name], i) => {
+    const glyphKey = TABLE_GLYPHS[i % TABLE_GLYPHS.length];
+
+    const li = el("li", { class: "sueno-row", "data-search": `${num} ${name}`.toLowerCase() });
+    const btn = el("button", {
+      type: "button",
+      class: "sueno-row__btn",
+      "aria-label": `Sueño ${num} · ${name}`,
+      "data-number": num,
+    });
+
+    const glyph = el("span", { class: "sueno-row__glyph" });
+    glyph.appendChild(iconNode(glyphKey));
+
+    const numEl  = el("span", { class: "sueno-row__num",  text: num });
+    const nameEl = el("span", { class: "sueno-row__name", text: name });
+
+    btn.append(glyph, numEl, nameEl);
+    li.append(btn);
+    frag.append(li);
+  });
+  table.replaceChildren(frag);
+}
+
+// Strip accents so "leon" finds "El león".
+function stripAccents(s) {
+  return s.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
+}
+
+function wireSuenosFilter() {
+  const grid    = document.getElementById("suenos-grid");
+  const table   = document.getElementById("suenos-table");
+  const input   = document.getElementById("suenos-q");
+  const clear   = document.querySelector(".suenos__clear");
+  const empty   = document.getElementById("suenos-empty");
+  const secTwo  = document.getElementById("suenos-section-two");
+  const secThree = document.getElementById("suenos-section-three");
+  if (!grid || !table || !input || !clear || !empty || !secTwo || !secThree) return;
+
+  function filterList(container, q) {
+    let matched = 0;
+    for (const li of container.children) {
+      const hit = q === "" || stripAccents(li.dataset.search).includes(q);
+      li.style.display = hit ? "" : "none";
+      if (hit) matched++;
+    }
+    return matched;
+  }
+
+  function apply(raw) {
+    const q = stripAccents(raw.trim());
+    clear.hidden = raw.length === 0;
+    const matchedTwo   = filterList(grid, q);
+    const matchedThree = filterList(table, q);
+    secTwo.classList.toggle("is-empty", matchedTwo === 0 && q !== "");
+    secThree.classList.toggle("is-empty", matchedThree === 0 && q !== "");
+    empty.hidden = !(matchedTwo === 0 && matchedThree === 0 && q !== "");
+  }
+
+  input.addEventListener("input", e => apply(e.target.value));
+  clear.addEventListener("click", () => {
+    input.value = "";
+    apply("");
+    input.focus();
+  });
+}
+
+// ── HASH ROUTER ──────────────────────────────────────────────
+function syncRoute() {
+  const view = location.hash === "#/dreams" ? "dreams" : "home";
+  document.body.dataset.activeView = view;
+  // Reset scroll when switching views — the two views are independently long.
+  window.scrollTo({ top: 0, behavior: "instant" });
+}
+window.addEventListener("hashchange", syncRoute);
+
 // ── BOOT ─────────────────────────────────────────────────────
 document.getElementById("dateline").textContent = spanishDateLine();
 renderGames();
+renderSuenosTwo();
+renderSuenosThree();
+wireSuenosFilter();
+syncRoute();
 
 // ── PWA ──────────────────────────────────────────────────────
 if ("serviceWorker" in navigator) {
