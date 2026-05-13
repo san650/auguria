@@ -32,13 +32,17 @@ function mulberry32(seed) {
 }
 // Civil date in Valencia (Europe/Madrid) — handles CET/CEST automatically.
 const TZ = "Europe/Madrid";
-function todayKey() {
+function madridKey(d) {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit",
-  }).formatToParts(new Date());
+  }).formatToParts(d);
   const m = Object.fromEntries(parts.map(p => [p.type, p.value]));
   return `${m.year}-${m.month}-${m.day}`;
 }
+function todayKey() { return madridKey(new Date()); }
+// The day Auguria is currently contemplating. Defaults to today;
+// changed via the Rueda Efeméride.
+let _selectedDate = todayKey();
 const rngFor = (date, game) => mulberry32(cyrb128(`${date}::${game}`));
 
 // pick `count` unique integers in [1..max] using `rng`
@@ -246,11 +250,15 @@ const NUMEROLOGY = {
 };
 
 // ── DATE LINE ────────────────────────────────────────────────
-function spanishDateLine() {
+// Treat a civil-date key as midday UTC so DST seams don't pull the
+// weekday across a boundary when we feed it back through Intl.
+function dateFromKey(key) { return new Date(`${key}T12:00:00Z`); }
+
+function spanishDateLine(key = _selectedDate) {
   const parts = new Intl.DateTimeFormat("es-ES", {
     timeZone: TZ,
     weekday: "long", day: "numeric", month: "long", year: "numeric",
-  }).formatToParts(new Date());
+  }).formatToParts(dateFromKey(key));
   const m = Object.fromEntries(parts.map(p => [p.type, p.value]));
   const weekday = m.weekday.charAt(0).toUpperCase() + m.weekday.slice(1);
   return `${weekday} · ${m.day} de ${m.month} de ${m.year}`;
@@ -316,9 +324,8 @@ function buildCard(game, date) {
 
 function renderGames() {
   const main = document.getElementById("games");
-  const date = todayKey();
   const frag = document.createDocumentFragment();
-  for (const game of GAMES) frag.append(buildCard(game, date));
+  for (const game of GAMES) frag.append(buildCard(game, _selectedDate));
   frag.append(buildJugadaCard());
   main.replaceChildren(frag);
 }
@@ -341,8 +348,8 @@ function buildJugadaCard() {
     type: "button",
     class: "sequence__clear jugada-card__clear",
     "aria-label": "Borrar mi jugada",
+    text: "Borrar",
   });
-  clearBtn.appendChild(svgNode(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 3 L11 11 M11 3 L3 11" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`));
   card.append(clearBtn);
 
   const head = el("div", { class: "card__head" },
@@ -1033,8 +1040,144 @@ function syncRoute() {
 }
 window.addEventListener("hashchange", syncRoute);
 
+// ── ALMANAQUE · date list + ribbon ──────────────────────────
+// A modal listing 7 days (2 back · today · 4 forward). Tapping
+// a day commits + closes.
+const CALENDAR_WEEKDAY_LONG = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+
+function calendarWeekdayIndex(key) {
+  const wd = new Intl.DateTimeFormat("en-US", {
+    timeZone: TZ, weekday: "short",
+  }).format(dateFromKey(key));
+  return ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].indexOf(wd);
+}
+
+// Build the 7-day window anchored on today: 2 days back, 4 days forward.
+function buildCalendarDates() {
+  const base = dateFromKey(todayKey());
+  const out = [];
+  for (let offset = -2; offset <= 4; offset++) {
+    const d = new Date(base.getTime() + offset * 86400000);
+    const key = madridKey(d);
+    const [, mo, da] = key.split("-").map(Number);
+    out.push({
+      key, day: da, month: mo, offset,
+      weekday: calendarWeekdayIndex(key),
+    });
+  }
+  return out;
+}
+
+const calendarDialog   = document.getElementById("calendar-dialog");
+const calendarList     = document.getElementById("calendar-list");
+const calendarCloseBtn = calendarDialog?.querySelector("[data-close]");
+const dateBadge     = document.getElementById("dateline");
+const dateBadgeText = document.getElementById("dateline-text");
+const dateRibbon    = document.getElementById("date-ribbon");
+const dateRibbonDate= document.getElementById("date-ribbon-date");
+const dateRibbonReturn = document.getElementById("date-ribbon-return");
+
+const _calendarDayNodes = new Map(); // key → row button
+
+function buildCalendar() {
+  if (!calendarList) return;
+  const dates = buildCalendarDates();
+  const tKey = todayKey();
+
+  _calendarDayNodes.clear();
+  const frag = document.createDocumentFragment();
+
+  for (const d of dates) {
+    const isToday    = d.key === tKey;
+    const isSelected = d.key === _selectedDate;
+
+    const li = el("li", {
+      class: "calendar-row"
+        + (isToday    ? " calendar-row--today"    : "")
+        + (isSelected ? " calendar-row--selected" : ""),
+      role: "option",
+      "aria-selected": isSelected ? "true" : "false",
+    });
+
+    const btn = el("button", {
+      type: "button",
+      class: "calendar-row__btn",
+      "data-key": d.key,
+      "aria-label": isToday
+        ? `${CALENDAR_WEEKDAY_LONG[d.weekday]} ${d.day} (hoy)`
+        : `${CALENDAR_WEEKDAY_LONG[d.weekday]} ${d.day}`,
+    });
+
+    btn.append(
+      el("span", { class: "calendar-row__num",  text: String(d.day) }),
+      el("span", { class: "calendar-row__name" },
+        CALENDAR_WEEKDAY_LONG[d.weekday],
+        isToday ? el("span", { class: "calendar-row__today", text: "(hoy)" }) : null,
+      ),
+    );
+
+    btn.addEventListener("click", () => commitSelectedDate(d.key));
+    btn.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowDown") { e.preventDefault(); calendarNudge(+1); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); calendarNudge(-1); }
+    });
+
+    li.append(btn);
+    frag.append(li);
+    _calendarDayNodes.set(d.key, btn);
+  }
+
+  calendarList.replaceChildren(frag);
+}
+
+function calendarNudge(delta) {
+  const dates = buildCalendarDates();
+  const focused = document.activeElement?.closest?.(".calendar-row__btn")?.dataset?.key;
+  const anchor = focused || _selectedDate;
+  const idx = dates.findIndex(d => d.key === anchor);
+  const next = dates[Math.max(0, Math.min(dates.length - 1, idx + delta))];
+  _calendarDayNodes.get(next?.key)?.focus();
+}
+
+function commitSelectedDate(key) {
+  _selectedDate = key;
+  const t = todayKey();
+  const offDay = key !== t;
+
+  // Refresh date badge label.
+  if (dateBadgeText) dateBadgeText.textContent = spanishDateLine(key);
+
+  // Toggle ribbon + body flag.
+  document.body.toggleAttribute("data-off-day", offDay);
+  if (dateRibbon) dateRibbon.dataset.visible = offDay ? "true" : "false";
+  if (dateRibbonDate) dateRibbonDate.textContent = offDay ? spanishDateLine(key) : "";
+
+  // Re-render the lottery cards with the new seed.
+  renderGames();
+
+  // Close the modal if it's open.
+  if (calendarDialog?.open) calendarDialog.close();
+}
+
+function openCalendar() {
+  if (!calendarDialog) return;
+  buildCalendar();
+  if (typeof calendarDialog.showModal === "function") calendarDialog.showModal();
+  else calendarDialog.setAttribute("open", "");
+  // Focus the currently selected day so arrow keys feel natural.
+  requestAnimationFrame(() => _calendarDayNodes.get(_selectedDate)?.focus());
+}
+
+dateBadge?.addEventListener("click", openCalendar);
+calendarCloseBtn?.addEventListener("click", () => calendarDialog.close());
+calendarDialog?.addEventListener("click", (e) => {
+  // Click on the backdrop (the dialog element itself) closes.
+  if (e.target === calendarDialog) calendarDialog.close();
+});
+dateRibbonReturn?.addEventListener("click", () => commitSelectedDate(todayKey()));
+
 // ── BOOT ─────────────────────────────────────────────────────
-document.getElementById("dateline").textContent = spanishDateLine();
+document.getElementById("dateline-text").textContent = spanishDateLine();
 renderGames();
 renderSuenosTwo();
 renderSuenosThree();

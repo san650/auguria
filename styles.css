@@ -237,7 +237,9 @@ body {
   opacity: 0.85;
 }
 .masthead__date {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
   font-family: var(--font-serif);
   font-size: 0.78rem;
   letter-spacing: 0.32em;
@@ -245,8 +247,20 @@ body {
   color: var(--gold);
   padding: 0.55rem 1.4rem;
   border: 1px solid rgba(212,168,87,0.4);
+  background: transparent;
   position: relative;
   margin: 0;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+.masthead__date:hover,
+.masthead__date:focus-visible {
+  color: var(--gold-bright);
+  border-color: var(--gold-bright);
+  box-shadow: 0 0 22px -6px rgba(236,200,121,0.45);
+  outline: none;
 }
 .masthead__date::before,
 .masthead__date::after {
@@ -258,6 +272,13 @@ body {
 }
 .masthead__date::before { left: -5px; }
 .masthead__date::after  { right: -5px; }
+
+.masthead__date-chev {
+  display: inline-block;
+  width: 7px; height: 7px;
+  opacity: 0.85;
+}
+.masthead__date-chev svg { width: 100%; height: 100%; display: block; }
 
 /* ── Games column ─────────────────────────────────────────── */
 .games {
@@ -851,17 +872,22 @@ body[data-active-view="home"]   [data-view="dreams"] { display: none; }
   opacity: 0.85;
 }
 
-/* Sticky search bar with backdrop fade.
-   Respects the iPhone safe-area-top so the magnifier and placeholder
-   never park behind the Dynamic Island / notch camera. The pseudo-
-   element above keeps the notch zone covered with the same fade so
-   the transition under the cutout feels continuous, not gappy. */
+/* Sticky search bar with a tinted dark fill + backdrop blur, so the
+   list scrolling beneath never bleeds through.  Negative horizontal
+   margins extend the band to the section edges (and the viewport edges
+   on phones), then internal padding restores the search field to the
+   original content width. */
 .suenos__search-wrap {
   position: sticky;
   top: var(--safe-top);
   z-index: 5;
-  padding: 0.75rem 0 1rem;
-  margin: 0 0 0.5rem;
+  padding: 0.75rem var(--pad) 1rem;
+  margin: 0 calc(var(--pad) * -1) 0.5rem;
+
+  background:
+    linear-gradient(180deg, rgba(10,13,42,0.94) 0%, rgba(10,13,42,0.88) 65%, rgba(10,13,42,0.7) 100%);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
 }
 .suenos__search {
   position: relative;
@@ -1024,7 +1050,7 @@ body[data-active-view="home"]   [data-view="dreams"] { display: none; }
   position: relative;
   width: var(--size); height: var(--size);
   display: grid;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: 2rem auto;
   align-items: center;
   justify-items: center;
   padding: 0.55rem 0 0.45rem;
@@ -1064,11 +1090,10 @@ body[data-active-view="home"]   [data-view="dreams"] { display: none; }
   display: grid; place-items: center;
   width: 100%;
   height: 100%;
-  padding-bottom: 0.15rem;
 }
 .sueno__icon svg {
-  width: 56%;
-  height: 56%;
+  width: 100%;
+  height: 100%;
   display: block;
 }
 .sueno__num {
@@ -1224,25 +1249,29 @@ body[data-active-view="home"]   [data-view="dreams"] { display: none; }
 .sequence__count {
   font-variant-numeric: lining-nums tabular-nums;
 }
+/* Text link in the rose tone — reads "Borrar" so the action is
+   unambiguous (used to be a × icon that looked like a close button). */
 .sequence__clear {
-  width: 30px; height: 30px;
-  display: grid; place-items: center;
-  color: var(--gold);
-  border: 1px solid rgba(212,168,87,0.4);
-  border-radius: 50%;
-  background: transparent;
-  transition: transform 0.3s, color 0.3s, border-color 0.3s, background 0.3s;
   flex: 0 0 auto;
+  padding: 0.55rem 0.6rem;
+  font-family: var(--font-serif);
+  font-size: 0.62rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--rose);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  opacity: 0.8;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.25s, opacity 0.25s;
 }
 .sequence__clear:hover,
 .sequence__clear:focus-visible {
-  transform: rotate(90deg);
-  color: var(--gold-bright);
-  border-color: var(--gold-bright);
-  background: rgba(212,168,87,0.08);
+  color: var(--rose);
+  opacity: 1;
   outline: 0;
 }
-.sequence__clear svg { width: 12px; height: 12px; }
 
 .sequence__list {
   list-style: none;
@@ -1679,4 +1708,329 @@ body[data-drawer-state="expanded"] .suenos { --drawer-clearance: 240px; }
 .numero__add[data-action="remove"]::before,
 .numero__add[data-action="remove"]::after {
   border-color: var(--rose);
+}
+
+/* ── Date ribbon ──────────────────────────────────────────────
+   Pinned to the top of the viewport when the user is contemplating
+   a non-today date. Rendered as a solid gold band with ink-dark
+   text so the user can't miss that they're off-day. The fill
+   extends through the iPhone safe-area (notch) zone so nothing
+   parks behind the camera cutout. */
+.date-ribbon {
+  position: fixed;
+  top: 0;
+  left: 0; right: 0;
+  z-index: 30;
+  padding-top: var(--safe-top);
+  transform: translateY(-110%);
+  transition: transform 0.55s cubic-bezier(.4,.1,.2,1);
+  pointer-events: none;
+
+  /* Brushed-gold gradient — leafs from bright at the top to soft at
+     the bottom, like an illuminated manuscript banner. */
+  background:
+    linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 55%, var(--gold-soft) 100%);
+  border-bottom: 1px solid rgba(10,13,42,0.55);
+  box-shadow:
+    0 0 0 1px rgba(236,200,121,0.5) inset,
+    0 10px 32px -10px rgba(0,0,0,0.65);
+}
+.date-ribbon[data-visible="true"] {
+  transform: translateY(0);
+  pointer-events: auto;
+}
+/* The selected date doesn't influence anything in the Sueños view, and
+   the ribbon would overlap the sticky search bar there — so hide it. */
+body[data-active-view="dreams"] .date-ribbon {
+  transform: translateY(-110%);
+  pointer-events: none;
+}
+.date-ribbon__inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0.55rem clamp(1.5rem, 5vw, 2.5rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  position: relative;
+}
+/* Small ink diamonds anchoring the lower edge — read as ribbon
+   tacks against the gold field. */
+.date-ribbon__inner::before,
+.date-ribbon__inner::after {
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  width: 6px; height: 6px;
+  background: var(--ink);
+  transform: rotate(45deg);
+}
+.date-ribbon__inner::before { left: clamp(1rem, 4vw, 2rem); }
+.date-ribbon__inner::after  { right: clamp(1rem, 4vw, 2rem); }
+
+.date-ribbon__star {
+  flex: 0 0 auto;
+  width: 14px; height: 14px;
+  color: var(--ink);
+  opacity: 0.95;
+  animation: ribbonStar 6s ease-in-out infinite alternate;
+}
+@keyframes ribbonStar {
+  0%   { opacity: 0.7; transform: rotate(-2deg); }
+  100% { opacity: 1;   transform: rotate(2deg); }
+}
+.date-ribbon__star svg { width: 100%; height: 100%; display: block; }
+
+.date-ribbon__text {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--font-body);
+  line-height: 1.2;
+  text-align: center;
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.6em;
+  overflow: hidden;
+}
+.date-ribbon__tag {
+  font-family: var(--font-serif);
+  font-size: 0.62rem;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--ink);
+  flex: 0 0 auto;
+}
+.date-ribbon__date {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 0.98rem;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.date-ribbon__return {
+  flex: 0 0 auto;
+  display: grid; place-items: center;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 1px solid rgba(10,13,42,0.55);
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform 0.5s cubic-bezier(.4,.2,.2,1.2),
+              background 0.25s, color 0.25s, border-color 0.25s;
+}
+.date-ribbon__return:hover,
+.date-ribbon__return:focus-visible {
+  background: var(--ink);
+  color: var(--gold-bright);
+  border-color: var(--ink);
+  transform: rotate(-220deg);
+  outline: none;
+}
+.date-ribbon__return svg { width: 13px; height: 13px; display: block; }
+
+/* When the ribbon is visible, push the masthead down a touch so its
+   first ornament doesn't crowd the ribbon under the notch. */
+body[data-off-day="true"] .masthead {
+  padding-top: 2.4rem;
+  transition: padding-top 0.55s cubic-bezier(.4,.1,.2,1);
+}
+
+/* ── Calendar dialog · La Rueda Efeméride ────────────────────────
+   Centered modal that hosts an astrolabe-style date dial.
+   The styling follows .numero / .confirm so the world stays cohesive. */
+.calendar {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(420px, calc(100vw - 2rem));
+  max-height: calc(100dvh - 2rem - var(--safe-top) - var(--safe-bottom));
+  height: max-content;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+
+  border: 1px solid rgba(212,168,87,0.5);
+  background:
+    radial-gradient(ellipse at top, rgba(212,168,87,0.1) 0%, transparent 60%),
+    linear-gradient(180deg, #15184a 0%, #0a0d2a 100%);
+  color: var(--vellum);
+  padding: 2.5rem 1.5rem 1.75rem;
+  border-radius: 4px;
+  text-align: center;
+  box-shadow:
+    0 0 0 1px rgba(212,168,87,0.15),
+    0 30px 80px -10px rgba(0,0,0,0.8),
+    0 0 80px -10px rgba(212,168,87,0.2);
+
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(.2,.7,.2,1);
+}
+.calendar[open] { opacity: 1; transform: translateY(0); }
+.calendar::backdrop {
+  background: radial-gradient(circle at center, rgba(10,13,42,0.6), rgba(0,0,0,0.85));
+  backdrop-filter: blur(4px);
+}
+
+/* corner brackets — same motif as .numero */
+.calendar::before,
+.calendar::after {
+  content: "";
+  position: absolute;
+  width: 22px; height: 22px;
+  border: 1px solid var(--gold);
+  opacity: 0.55;
+}
+.calendar::before {
+  top: 8px; left: 8px;
+  border-right: 0; border-bottom: 0;
+}
+.calendar::after {
+  bottom: 8px; right: 8px;
+  border-left: 0; border-top: 0;
+}
+
+.calendar__close {
+  position: absolute; top: 0.6rem; right: 0.6rem;
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  color: var(--gold);
+  opacity: 0.7;
+  transition: opacity 0.25s, transform 0.5s cubic-bezier(.4,.2,.2,1.2);
+}
+.calendar__close:hover { opacity: 1; transform: rotate(90deg); }
+.calendar__close svg { width: 14px; height: 14px; }
+
+.calendar__eyebrow {
+  font-family: var(--font-serif);
+  font-size: 0.62rem;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 0.5rem;
+  opacity: 0.85;
+}
+.calendar__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.6rem, 1.3rem + 1.5vw, 2rem);
+  line-height: 1;
+  margin: 0 0 1.2rem;
+  color: var(--vellum);
+  letter-spacing: 0.02em;
+}
+
+/* ── Calendar list · 7 days (2 back, today, 4 forward) ──
+   Borrows the .suenos__table row vocabulary: gold serif number,
+   italic vellum name, gold chevron on hover. */
+.calendar__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid rgba(212,168,87,0.18);
+}
+.calendar-row { border-bottom: 1px solid rgba(212,168,87,0.18); }
+
+.calendar-row__btn {
+  display: flex;
+  width: 100%;
+  align-items: baseline;
+  gap: 0.95rem;
+  padding: 0.7rem 0.5rem;
+  text-align: left;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.25s;
+}
+.calendar-row__btn::after {
+  content: "›";
+  margin-left: auto;
+  align-self: center;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--gold);
+  opacity: 0.45;
+  transition: transform 0.3s, opacity 0.3s, color 0.3s;
+}
+.calendar-row__btn:hover,
+.calendar-row__btn:focus-visible {
+  background: linear-gradient(90deg, rgba(212,168,87,0.1), rgba(212,168,87,0.02));
+  outline: 0;
+}
+.calendar-row__btn:hover::after,
+.calendar-row__btn:focus-visible::after {
+  transform: translateX(3px);
+  opacity: 1;
+  color: var(--gold-bright);
+}
+
+.calendar-row__num {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  line-height: 1;
+  color: var(--vellum);
+  font-variant-numeric: lining-nums tabular-nums;
+  flex: 0 0 2.2rem;
+  text-align: right;
+  transition: color 0.25s;
+}
+.calendar-row__name {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.2;
+  color: var(--vellum);
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.calendar-row__today {
+  display: inline-block;
+  margin-left: 0.5em;
+  font-family: var(--font-serif);
+  font-style: normal;
+  font-size: 0.62rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
+  vertical-align: 0.1em;
+}
+
+/* Today — gold numeral so the eye lands here first */
+.calendar-row--today .calendar-row__num  { color: var(--gold); }
+.calendar-row--today .calendar-row__name { color: var(--vellum); }
+
+/* Selected — left rule + softer gold wash */
+.calendar-row--selected .calendar-row__btn {
+  background: linear-gradient(90deg, rgba(212,168,87,0.14), rgba(212,168,87,0.02));
+  box-shadow: inset 2px 0 0 0 var(--gold);
+}
+.calendar-row--selected .calendar-row__num  { color: var(--gold-bright); }
+.calendar-row--selected .calendar-row__name { color: var(--vellum); }
+.calendar-row--selected .calendar-row__btn::after {
+  color: var(--gold-bright);
+  opacity: 1;
+}
+
+.calendar__hint {
+  margin: 1rem 0 0;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.82rem;
+  color: var(--vellum-soft);
+  opacity: 0.65;
+  text-align: center;
 }
