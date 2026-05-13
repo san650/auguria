@@ -1154,6 +1154,8 @@ function commitSelectedDate(key) {
 
   // Re-render the lottery cards with the new seed.
   renderGames();
+  // renderGames() rebuilds the jugada card hidden; restore its visibility.
+  renderSequence();
 
   // Close the modal if it's open.
   if (calendarDialog?.open) calendarDialog.close();
