@@ -862,21 +862,6 @@ body[data-active-view="home"]   [data-view="dreams"] { display: none; }
   z-index: 5;
   padding: 0.75rem 0 1rem;
   margin: 0 0 0.5rem;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-.suenos__search-wrap::before {
-  /* Fills the safe-area-top strip above the sticky bar with the same
-     ink fade, so content scrolling underneath the notch reads as
-     "behind the device chrome" rather than abruptly cut. */
-  content: "";
-  position: absolute;
-  left: 0; right: 0;
-  bottom: 100%;
-  height: var(--safe-top);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  pointer-events: none;
 }
 .suenos__search {
   position: relative;
