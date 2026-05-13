@@ -36,20 +36,18 @@
   color-scheme: dark;
 }
 
-/* respect the notch/Dynamic Island and the home indicator */
+/* ── reset + base ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+/* iOS safe areas — applied here (after the reset) so the notch padding
+   isn't wiped out by a later `padding: 0`. */
 body {
   padding-top:    var(--safe-top);
   padding-bottom: var(--safe-bottom);
   padding-left:   var(--safe-left);
   padding-right:  var(--safe-right);
-}
-
-/* ── reset + base ─────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; }
-button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
-
-body {
   min-height: 100dvh;
   font-family: var(--font-body);
   font-size: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
@@ -864,12 +862,6 @@ body[data-active-view="home"]   [data-view="dreams"] { display: none; }
   z-index: 5;
   padding: 0.75rem 0 1rem;
   margin: 0 0 0.5rem;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(6,8,31,0.88) 0%,
-      rgba(6,8,31,0.78) 70%,
-      rgba(6,8,31,0) 100%);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
