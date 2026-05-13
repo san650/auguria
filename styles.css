@@ -874,7 +874,6 @@ body[data-active-view="home"]   [data-view="dreams"] { display: none; }
   left: 0; right: 0;
   bottom: 100%;
   height: var(--safe-top);
-  background: rgba(6,8,31,0.92);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   pointer-events: none;
