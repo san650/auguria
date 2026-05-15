@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 320">
+  <defs>
+    <radialGradient id="bg10" cx="50%" cy="42%" r="70%">
+      <stop offset="0%" stop-color="#1c1750"/>
+      <stop offset="55%" stop-color="#0a0d2a"/>
+      <stop offset="100%" stop-color="#06081f"/>
+    </radialGradient>
+  </defs>
+  <rect x="0" y="0" width="200" height="320" fill="url(#bg10)"/>
+  <rect x="6"  y="6"  width="188" height="308" rx="8" fill="none" stroke="#d4a857" stroke-width="1.2"/>
+  <rect x="13" y="13" width="174" height="294" rx="5" fill="none" stroke="#d4a857" stroke-width="0.5" stroke-opacity="0.55"/>
+  <rect x="18" y="18" width="164" height="284" rx="3" fill="none" stroke="#d4a857" stroke-width="0.3" stroke-opacity="0.35"/>
+  <g fill="none" stroke="#d4a857" stroke-width="0.6">
+    <g transform="translate(22 22)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(178 22)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(22 298)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(178 298)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+  </g>
+  <g transform="translate(100 36)">
+    <line x1="-82" y1="0" x2="-58" y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.65"/>
+    <line x1="58"  y1="0" x2="82"  y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.65"/>
+    <text text-anchor="middle" fill="#d4a857" font-family="Cinzel, serif" font-size="10" letter-spacing="2.4" y="4">LA FORTUNA</text>
+  </g>
+  <g fill="none" stroke="#d4a857" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9">
+    <circle cx="100" cy="176" r="64" stroke-width="1"/>
+    <circle cx="100" cy="176" r="56" stroke-width="0.35" stroke-opacity="0.45"/>
+    <line x1="100.00" y1="166.00" x2="100.00" y2="120.00" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="105.88" y1="167.91" x2="132.92" y2="130.70" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="109.51" y1="172.91" x2="153.26" y2="158.70" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="109.51" y1="179.09" x2="153.26" y2="193.30" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="105.88" y1="184.09" x2="132.92" y2="221.30" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="100.00" y1="186.00" x2="100.00" y2="232.00" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="94.12" y1="184.09" x2="67.08" y2="221.30" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="90.49" y1="179.09" x2="46.74" y2="193.30" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="90.49" y1="172.91" x2="46.74" y2="158.70" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="94.12" y1="167.91" x2="67.08" y2="130.70" stroke-width="0.4" stroke-opacity="0.6"/>
+    <path d="M 100.00 126.00 L 147.55 191.45 L 70.61 216.45 L 70.61 135.55 L 147.55 160.55 L 100.00 226.00 L 52.45 160.55 L 129.39 135.55 L 129.39 216.45 L 52.45 191.45 Z" stroke-width="1"/>
+    <circle cx="100.00" cy="122.00" r="1.3" fill="#d4a857" stroke="none"/>
+    <circle cx="131.74" cy="132.31" r="1.3" fill="#d4a857" stroke="none"/>
+    <circle cx="151.36" cy="159.31" r="1.3" fill="#d4a857" stroke="none"/>
+    <circle cx="151.36" cy="192.69" r="1.3" fill="#d4a857" stroke="none"/>
+    <circle cx="131.74" cy="219.69" r="1.3" fill="#d4a857" stroke="none"/>
+    <circle cx="100.00" cy="230.00" r="1.3" fill="#d4a857" stroke="none"/>
+    <circle cx="68.26" cy="219.69" r="1.3" fill="#d4a857" stroke="none"/>
+    <circle cx="48.64" cy="192.69" r="1.3" fill="#d4a857" stroke="none"/>
+    <circle cx="48.64" cy="159.31" r="1.3" fill="#d4a857" stroke="none"/>
+    <circle cx="68.26" cy="132.31" r="1.3" fill="#d4a857" stroke="none"/>
+    <circle cx="100" cy="176" r="5" stroke-width="0.85"/>
+    <circle cx="100" cy="176" r="2" fill="#d4a857" stroke="none"/>
+    <circle cx="100" cy="98" r="4" stroke-width="0.45" stroke-opacity="0.55"/>
+    <circle cx="100" cy="98" r="1.3" fill="#d4a857" stroke="none"/>
+    <circle cx="178" cy="176" r="4" stroke-width="0.45" stroke-opacity="0.55"/>
+    <circle cx="178" cy="176" r="1.3" fill="#d4a857" stroke="none"/>
+    <circle cx="100" cy="254" r="4" stroke-width="0.45" stroke-opacity="0.55"/>
+    <circle cx="100" cy="254" r="1.3" fill="#d4a857" stroke="none"/>
+    <circle cx="22" cy="176" r="4" stroke-width="0.45" stroke-opacity="0.55"/>
+    <circle cx="22" cy="176" r="1.3" fill="#d4a857" stroke="none"/>
+  </g>
+  <g transform="translate(100 292)">
+    <line x1="-60" y1="0" x2="-12" y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="12"  y1="0" x2="60"  y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.6"/>
+    <path d="M -4 0 L 0 -4 L 4 0 L 0 4 Z" fill="none" stroke="#d4a857" stroke-width="0.5"/>
+    <circle r="1.1" fill="#d4a857"/>
+  </g>
+</svg>

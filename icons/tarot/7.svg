@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 320">
+  <defs>
+    <radialGradient id="bg7" cx="50%" cy="42%" r="70%">
+      <stop offset="0%" stop-color="#1c1750"/>
+      <stop offset="55%" stop-color="#0a0d2a"/>
+      <stop offset="100%" stop-color="#06081f"/>
+    </radialGradient>
+  </defs>
+  <rect x="0" y="0" width="200" height="320" fill="url(#bg7)"/>
+  <rect x="6"  y="6"  width="188" height="308" rx="8" fill="none" stroke="#d4a857" stroke-width="1.2"/>
+  <rect x="13" y="13" width="174" height="294" rx="5" fill="none" stroke="#d4a857" stroke-width="0.5" stroke-opacity="0.55"/>
+  <rect x="18" y="18" width="164" height="284" rx="3" fill="none" stroke="#d4a857" stroke-width="0.3" stroke-opacity="0.35"/>
+  <g fill="none" stroke="#d4a857" stroke-width="0.6">
+    <g transform="translate(22 22)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(178 22)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(22 298)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(178 298)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+  </g>
+  <g transform="translate(100 36)">
+    <line x1="-82" y1="0" x2="-58" y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.65"/>
+    <line x1="58"  y1="0" x2="82"  y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.65"/>
+    <text text-anchor="middle" fill="#d4a857" font-family="Cinzel, serif" font-size="10" letter-spacing="2.4" y="4">EL CARRO</text>
+  </g>
+  <g fill="none" stroke="#d4a857" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9">
+    <circle cx="100" cy="176" r="62" stroke-width="1"/>
+    <circle cx="100" cy="176" r="54" stroke-width="0.35" stroke-opacity="0.45"/>
+    <line x1="100.00" y1="166.00" x2="100.00" y2="114.00" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="107.82" y1="169.77" x2="148.47" y2="137.34" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="109.75" y1="178.23" x2="160.45" y2="189.80" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="104.34" y1="185.01" x2="126.90" y2="231.86" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="95.66" y1="185.01" x2="73.10" y2="231.86" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="90.25" y1="178.23" x2="39.55" y2="189.80" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="92.18" y1="169.77" x2="51.53" y2="137.34" stroke-width="0.4" stroke-opacity="0.6"/>
+    <path d="M 100.00 126.00 L 148.75 187.13 L 78.31 221.05 L 60.91 144.83 L 139.09 144.83 L 121.69 221.05 L 51.25 187.13 Z" stroke-width="1"/>
+    <circle cx="100.00" cy="122.00" r="1.4" fill="#d4a857" stroke="none"/>
+    <circle cx="142.22" cy="142.33" r="1.4" fill="#d4a857" stroke="none"/>
+    <circle cx="152.65" cy="188.02" r="1.4" fill="#d4a857" stroke="none"/>
+    <circle cx="123.43" cy="224.65" r="1.4" fill="#d4a857" stroke="none"/>
+    <circle cx="76.57" cy="224.65" r="1.4" fill="#d4a857" stroke="none"/>
+    <circle cx="47.35" cy="188.02" r="1.4" fill="#d4a857" stroke="none"/>
+    <circle cx="57.78" cy="142.33" r="1.4" fill="#d4a857" stroke="none"/>
+    <path d="M 100.00 167.00 L 101.53 172.30 L 106.36 169.64 L 103.70 174.47 L 109.00 176.00 L 103.70 177.53 L 106.36 182.36 L 101.53 179.70 L 100.00 185.00 L 98.47 179.70 L 93.64 182.36 L 96.30 177.53 L 91.00 176.00 L 96.30 174.47 L 93.64 169.64 L 98.47 172.30 Z" stroke-width="0.7"/>
+    <circle cx="100" cy="176" r="3" stroke-width="0.6"/>
+    <circle cx="100" cy="176" r="1.4" fill="#d4a857" stroke="none"/>
+    <circle cx="90" cy="84" r="1.4" fill="#d4a857" stroke="none"/>
+    <circle cx="110" cy="84" r="1.4" fill="#d4a857" stroke="none"/>
+  </g>
+  <g transform="translate(100 292)">
+    <line x1="-60" y1="0" x2="-12" y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="12"  y1="0" x2="60"  y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.6"/>
+    <path d="M -4 0 L 0 -4 L 4 0 L 0 4 Z" fill="none" stroke="#d4a857" stroke-width="0.5"/>
+    <circle r="1.1" fill="#d4a857"/>
+  </g>
+</svg>

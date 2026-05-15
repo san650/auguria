@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 320">
+  <defs>
+    <radialGradient id="bg4" cx="50%" cy="42%" r="70%">
+      <stop offset="0%" stop-color="#1c1750"/>
+      <stop offset="55%" stop-color="#0a0d2a"/>
+      <stop offset="100%" stop-color="#06081f"/>
+    </radialGradient>
+  </defs>
+  <rect x="0" y="0" width="200" height="320" fill="url(#bg4)"/>
+  <rect x="6"  y="6"  width="188" height="308" rx="8" fill="none" stroke="#d4a857" stroke-width="1.2"/>
+  <rect x="13" y="13" width="174" height="294" rx="5" fill="none" stroke="#d4a857" stroke-width="0.5" stroke-opacity="0.55"/>
+  <rect x="18" y="18" width="164" height="284" rx="3" fill="none" stroke="#d4a857" stroke-width="0.3" stroke-opacity="0.35"/>
+  <g fill="none" stroke="#d4a857" stroke-width="0.6">
+    <g transform="translate(22 22)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(178 22)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(22 298)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(178 298)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+  </g>
+  <g transform="translate(100 36)">
+    <line x1="-82" y1="0" x2="-58" y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.65"/>
+    <line x1="58"  y1="0" x2="82"  y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.65"/>
+    <text text-anchor="middle" fill="#d4a857" font-family="Cinzel, serif" font-size="10" letter-spacing="2.4" y="4">EL EMPERADOR</text>
+  </g>
+  <g fill="none" stroke="#d4a857" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9">
+    <g transform="translate(100 78)" stroke-width="0.95">
+      <path d="M -18 6 L -14 -4 L -6 4 L 0 -10 L 6 4 L 14 -4 L 18 6 Z"/>
+      <line x1="-18" y1="8" x2="18" y2="8"/>
+    </g>
+    <g fill="#d4a857" stroke="none">
+      <circle cx="86" cy="74" r="1.2"/>
+      <circle cx="100"    cy="68" r="1.5"/>
+      <circle cx="114" cy="74" r="1.2"/>
+    </g>
+    <rect x="46" y="126" width="108" height="108" stroke-width="1.0"/>
+    <rect x="56" y="136" width="88" height="88" stroke-width="0.55"/>
+    <rect x="68" y="148" width="64" height="64" stroke-width="0.45"/>
+    <line x1="46" y1="180" x2="154" y2="180" stroke-width="0.45" stroke-opacity="0.7"/>
+    <line x1="100" y1="126" x2="100" y2="234" stroke-width="0.45" stroke-opacity="0.7"/>
+    <g transform="translate(100 180)">
+      <path d="M 0 -10 L 10 0 L 0 10 L -10 0 Z" stroke-width="0.7"/>
+      <circle r="3" stroke-width="0.5"/>
+      <circle r="1.1" fill="#d4a857"/>
+    </g>
+    <g transform="translate(40 170)" stroke-width="0.6">
+      <circle r="3.5"/>
+      <path d="M -3 -2 Q -6 -6 -3 -7"/>
+      <path d="M  3 -2 Q  6 -6  3 -7"/>
+      <circle r="0.7" fill="#d4a857"/>
+    </g>
+    <g transform="translate(160 170)" stroke-width="0.6">
+      <circle r="3.5"/>
+      <path d="M -3 -2 Q -6 -6 -3 -7"/>
+      <path d="M  3 -2 Q  6 -6  3 -7"/>
+      <circle r="0.7" fill="#d4a857"/>
+    </g>
+    <g transform="translate(40 210)" stroke-width="0.6">
+      <circle r="3.5"/>
+      <path d="M -3 -2 Q -6 -6 -3 -7"/>
+      <path d="M  3 -2 Q  6 -6  3 -7"/>
+      <circle r="0.7" fill="#d4a857"/>
+    </g>
+    <g transform="translate(160 210)" stroke-width="0.6">
+      <circle r="3.5"/>
+      <path d="M -3 -2 Q -6 -6 -3 -7"/>
+      <path d="M  3 -2 Q  6 -6  3 -7"/>
+      <circle r="0.7" fill="#d4a857"/>
+    </g>
+  </g>
+  <g transform="translate(100 292)">
+    <line x1="-60" y1="0" x2="-12" y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="12"  y1="0" x2="60"  y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.6"/>
+    <path d="M -4 0 L 0 -4 L 4 0 L 0 4 Z" fill="none" stroke="#d4a857" stroke-width="0.5"/>
+    <circle r="1.1" fill="#d4a857"/>
+  </g>
+</svg>

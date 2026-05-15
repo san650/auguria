@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 320">
+  <defs>
+    <radialGradient id="bg6" cx="50%" cy="42%" r="70%">
+      <stop offset="0%" stop-color="#1c1750"/>
+      <stop offset="55%" stop-color="#0a0d2a"/>
+      <stop offset="100%" stop-color="#06081f"/>
+    </radialGradient>
+  </defs>
+  <rect x="0" y="0" width="200" height="320" fill="url(#bg6)"/>
+  <rect x="6"  y="6"  width="188" height="308" rx="8" fill="none" stroke="#d4a857" stroke-width="1.2"/>
+  <rect x="13" y="13" width="174" height="294" rx="5" fill="none" stroke="#d4a857" stroke-width="0.5" stroke-opacity="0.55"/>
+  <rect x="18" y="18" width="164" height="284" rx="3" fill="none" stroke="#d4a857" stroke-width="0.3" stroke-opacity="0.35"/>
+  <g fill="none" stroke="#d4a857" stroke-width="0.6">
+    <g transform="translate(22 22)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(178 22)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(22 298)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(178 298)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+  </g>
+  <g transform="translate(100 36)">
+    <line x1="-82" y1="0" x2="-58" y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.65"/>
+    <line x1="58"  y1="0" x2="82"  y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.65"/>
+    <text text-anchor="middle" fill="#d4a857" font-family="Cinzel, serif" font-size="10" letter-spacing="2.4" y="4">LOS ENAMORADOS</text>
+  </g>
+  <g fill="none" stroke="#d4a857" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9">
+    <path d="M 100.00 120.00 L 146.77 201.00 L 53.23 201.00 Z" stroke-width="1"/>
+    <path d="M 100.00 228.00 L 53.23 147.00 L 146.77 147.00 Z" stroke-width="1"/>
+    <path d="M 127.00 174.00 L 113.50 197.38 L 86.50 197.38 L 73.00 174.00 L 86.50 150.62 L 113.50 150.62 Z" stroke-width="0.45" stroke-opacity="0.65"/>
+    <circle cx="100" cy="174" r="62" stroke-width="0.4" stroke-opacity="0.45"/>
+    <circle cx="100.00" cy="118.00" r="1.2" fill="#d4a857" stroke="none"/>
+    <circle cx="148.50" cy="146.00" r="1.2" fill="#d4a857" stroke="none"/>
+    <circle cx="148.50" cy="202.00" r="1.2" fill="#d4a857" stroke="none"/>
+    <circle cx="100.00" cy="230.00" r="1.2" fill="#d4a857" stroke="none"/>
+    <circle cx="51.50" cy="202.00" r="1.2" fill="#d4a857" stroke="none"/>
+    <circle cx="51.50" cy="146.00" r="1.2" fill="#d4a857" stroke="none"/>
+    <circle cx="100" cy="174" r="4" stroke-width="0.7"/>
+    <ellipse cx="100" cy="174" rx="3" ry="1.4" stroke-width="0.5"/>
+    <circle cx="100" cy="174" r="0.9" fill="#d4a857" stroke="none"/>
+    <path d="M 100.00 76.00 L 101.41 80.06 L 105.71 80.15 L 102.28 82.74 L 103.53 86.85 L 100.00 84.40 L 96.47 86.85 L 97.72 82.74 L 94.29 80.15 L 98.59 80.06 Z" fill="#d4a857" stroke="none"/>
+  </g>
+  <g transform="translate(100 292)">
+    <line x1="-60" y1="0" x2="-12" y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="12"  y1="0" x2="60"  y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.6"/>
+    <path d="M -4 0 L 0 -4 L 4 0 L 0 4 Z" fill="none" stroke="#d4a857" stroke-width="0.5"/>
+    <circle r="1.1" fill="#d4a857"/>
+  </g>
+</svg>

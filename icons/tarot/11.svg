@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 320">
+  <defs>
+    <radialGradient id="bg11" cx="50%" cy="42%" r="70%">
+      <stop offset="0%" stop-color="#1c1750"/>
+      <stop offset="55%" stop-color="#0a0d2a"/>
+      <stop offset="100%" stop-color="#06081f"/>
+    </radialGradient>
+  </defs>
+  <rect x="0" y="0" width="200" height="320" fill="url(#bg11)"/>
+  <rect x="6"  y="6"  width="188" height="308" rx="8" fill="none" stroke="#d4a857" stroke-width="1.2"/>
+  <rect x="13" y="13" width="174" height="294" rx="5" fill="none" stroke="#d4a857" stroke-width="0.5" stroke-opacity="0.55"/>
+  <rect x="18" y="18" width="164" height="284" rx="3" fill="none" stroke="#d4a857" stroke-width="0.3" stroke-opacity="0.35"/>
+  <g fill="none" stroke="#d4a857" stroke-width="0.6">
+    <g transform="translate(22 22)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(178 22)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(22 298)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(178 298)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+  </g>
+  <g transform="translate(100 36)">
+    <line x1="-82" y1="0" x2="-58" y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.65"/>
+    <line x1="58"  y1="0" x2="82"  y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.65"/>
+    <text text-anchor="middle" fill="#d4a857" font-family="Cinzel, serif" font-size="10" letter-spacing="2.4" y="4">LA JUSTICIA</text>
+  </g>
+  <g fill="none" stroke="#d4a857" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9">
+    <path d="M 100.00 118.00 L 142.32 210.67 L 44.57 181.97 L 130.28 126.89 L 115.78 227.73 L 49.06 150.74 L 150.94 150.74 L 84.22 227.73 L 69.72 126.89 L 155.43 181.97 L 57.68 210.67 Z" stroke-width="1"/>
+    <circle cx="100" cy="174" r="62" stroke-width="0.4" stroke-opacity="0.45"/>
+    <circle cx="100.00" cy="114.00" r="1.2" fill="#d4a857" stroke="none"/>
+    <circle cx="132.44" cy="123.52" r="1.2" fill="#d4a857" stroke="none"/>
+    <circle cx="154.58" cy="149.08" r="1.2" fill="#d4a857" stroke="none"/>
+    <circle cx="159.39" cy="182.54" r="1.2" fill="#d4a857" stroke="none"/>
+    <circle cx="145.34" cy="213.29" r="1.2" fill="#d4a857" stroke="none"/>
+    <circle cx="116.90" cy="231.57" r="1.2" fill="#d4a857" stroke="none"/>
+    <circle cx="83.10" cy="231.57" r="1.2" fill="#d4a857" stroke="none"/>
+    <circle cx="54.66" cy="213.29" r="1.2" fill="#d4a857" stroke="none"/>
+    <circle cx="40.61" cy="182.54" r="1.2" fill="#d4a857" stroke="none"/>
+    <circle cx="45.42" cy="149.08" r="1.2" fill="#d4a857" stroke="none"/>
+    <circle cx="67.56" cy="123.52" r="1.2" fill="#d4a857" stroke="none"/>
+    <line x1="100" y1="96" x2="100" y2="246" stroke-width="1"/>
+    <circle cx="100" cy="96" r="3" stroke-width="0.7"/>
+    <circle cx="100" cy="96" r="1.2" fill="#d4a857" stroke="none"/>
+    <line x1="93" y1="106" x2="107" y2="106" stroke-width="0.7"/>
+    <path d="M 97.5 246 L 100 252 L 102.5 246 Z" stroke-width="0.6"/>
+    <line x1="56" y1="156" x2="144" y2="156" stroke-width="0.95"/>
+    <line x1="56" y1="156" x2="56" y2="178" stroke-width="0.5" stroke-opacity="0.7"/>
+    <line x1="144" y1="156" x2="144" y2="178" stroke-width="0.5" stroke-opacity="0.7"/>
+    <circle cx="56" cy="182" r="7" stroke-width="0.85"/>
+    <path d="M 49 182 A 7 5 0 0 0 63 182" stroke-width="0.55" stroke-opacity="0.7"/>
+    <circle cx="144" cy="182" r="7" stroke-width="0.85"/>
+    <path d="M 137 182 A 7 5 0 0 0 151 182" stroke-width="0.55" stroke-opacity="0.7"/>
+    <circle cx="100" cy="156" r="3" stroke-width="0.65"/>
+    <circle cx="100" cy="156" r="1.2" fill="#d4a857" stroke="none"/>
+    <circle cx="100" cy="174" r="2.2" fill="#d4a857" stroke="none"/>
+  </g>
+  <g transform="translate(100 292)">
+    <line x1="-60" y1="0" x2="-12" y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="12"  y1="0" x2="60"  y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.6"/>
+    <path d="M -4 0 L 0 -4 L 4 0 L 0 4 Z" fill="none" stroke="#d4a857" stroke-width="0.5"/>
+    <circle r="1.1" fill="#d4a857"/>
+  </g>
+</svg>

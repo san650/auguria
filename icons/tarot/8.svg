@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 320">
+  <defs>
+    <radialGradient id="bg8" cx="50%" cy="42%" r="70%">
+      <stop offset="0%" stop-color="#1c1750"/>
+      <stop offset="55%" stop-color="#0a0d2a"/>
+      <stop offset="100%" stop-color="#06081f"/>
+    </radialGradient>
+  </defs>
+  <rect x="0" y="0" width="200" height="320" fill="url(#bg8)"/>
+  <rect x="6"  y="6"  width="188" height="308" rx="8" fill="none" stroke="#d4a857" stroke-width="1.2"/>
+  <rect x="13" y="13" width="174" height="294" rx="5" fill="none" stroke="#d4a857" stroke-width="0.5" stroke-opacity="0.55"/>
+  <rect x="18" y="18" width="164" height="284" rx="3" fill="none" stroke="#d4a857" stroke-width="0.3" stroke-opacity="0.35"/>
+  <g fill="none" stroke="#d4a857" stroke-width="0.6">
+    <g transform="translate(22 22)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(178 22)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(22 298)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(178 298)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+  </g>
+  <g transform="translate(100 36)">
+    <line x1="-82" y1="0" x2="-58" y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.65"/>
+    <line x1="58"  y1="0" x2="82"  y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.65"/>
+    <text text-anchor="middle" fill="#d4a857" font-family="Cinzel, serif" font-size="10" letter-spacing="2.4" y="4">LA FUERZA</text>
+  </g>
+  <g fill="none" stroke="#d4a857" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9">
+    <path d="M 100.00 118.00 L 156.00 174.00 L 100.00 230.00 L 44.00 174.00 Z" stroke-width="1"/>
+    <path d="M 139.60 134.40 L 139.60 213.60 L 60.40 213.60 L 60.40 134.40 Z" stroke-width="1"/>
+    <path d="M 106.89 157.37 L 116.63 167.11 L 116.63 180.89 L 106.89 190.63 L 93.11 190.63 L 83.37 180.89 L 83.37 167.11 L 93.11 157.37 Z" stroke-width="0.5" stroke-opacity="0.65"/>
+    <g transform="translate(100 174)" stroke-width="1.15">
+      <path d="M -44 0 C -44 -22, -8 -22, 0 0 C 8 22, 44 22, 44 0 C 44 -22, 8 -22, 0 0 C -8 22, -44 22, -44 0 Z"/>
+    </g>
+    <circle cx="74" cy="174" r="2.4" stroke-width="0.6"/>
+    <circle cx="74" cy="174" r="1" fill="#d4a857" stroke="none"/>
+    <circle cx="126" cy="174" r="2.4" stroke-width="0.6"/>
+    <circle cx="126" cy="174" r="1" fill="#d4a857" stroke="none"/>
+    <circle cx="100" cy="174" r="4" stroke-width="0.7"/>
+    <circle cx="100" cy="174" r="1.4" fill="#d4a857" stroke="none"/>
+    <circle cx="122.96" cy="118.57" r="0.9" fill="#d4a857" stroke="none"/>
+    <circle cx="155.43" cy="151.04" r="0.9" fill="#d4a857" stroke="none"/>
+    <circle cx="155.43" cy="196.96" r="0.9" fill="#d4a857" stroke="none"/>
+    <circle cx="122.96" cy="229.43" r="0.9" fill="#d4a857" stroke="none"/>
+    <circle cx="77.04" cy="229.43" r="0.9" fill="#d4a857" stroke="none"/>
+    <circle cx="44.57" cy="196.96" r="0.9" fill="#d4a857" stroke="none"/>
+    <circle cx="44.57" cy="151.04" r="0.9" fill="#d4a857" stroke="none"/>
+    <circle cx="77.04" cy="118.57" r="0.9" fill="#d4a857" stroke="none"/>
+  </g>
+  <g transform="translate(100 292)">
+    <line x1="-60" y1="0" x2="-12" y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="12"  y1="0" x2="60"  y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.6"/>
+    <path d="M -4 0 L 0 -4 L 4 0 L 0 4 Z" fill="none" stroke="#d4a857" stroke-width="0.5"/>
+    <circle r="1.1" fill="#d4a857"/>
+  </g>
+</svg>

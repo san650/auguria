@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 320">
+  <defs>
+    <radialGradient id="bg5" cx="50%" cy="42%" r="70%">
+      <stop offset="0%" stop-color="#1c1750"/>
+      <stop offset="55%" stop-color="#0a0d2a"/>
+      <stop offset="100%" stop-color="#06081f"/>
+    </radialGradient>
+  </defs>
+  <rect x="0" y="0" width="200" height="320" fill="url(#bg5)"/>
+  <rect x="6"  y="6"  width="188" height="308" rx="8" fill="none" stroke="#d4a857" stroke-width="1.2"/>
+  <rect x="13" y="13" width="174" height="294" rx="5" fill="none" stroke="#d4a857" stroke-width="0.5" stroke-opacity="0.55"/>
+  <rect x="18" y="18" width="164" height="284" rx="3" fill="none" stroke="#d4a857" stroke-width="0.3" stroke-opacity="0.35"/>
+  <g fill="none" stroke="#d4a857" stroke-width="0.6">
+    <g transform="translate(22 22)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(178 22)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(22 298)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(178 298)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+  </g>
+  <g transform="translate(100 36)">
+    <line x1="-82" y1="0" x2="-58" y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.65"/>
+    <line x1="58"  y1="0" x2="82"  y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.65"/>
+    <text text-anchor="middle" fill="#d4a857" font-family="Cinzel, serif" font-size="10" letter-spacing="2.4" y="4">EL HIEROFANTE</text>
+  </g>
+  <g fill="none" stroke="#d4a857" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9">
+    <g transform="translate(100 82)" stroke-width="0.9">
+      <line x1="0" y1="-10" x2="0" y2="14"/>
+      <line x1="-7" y1="-4" x2="7" y2="-4"/>
+      <line x1="-5" y1="1"  x2="5" y2="1"/>
+      <line x1="-3" y1="6"  x2="3" y2="6"/>
+    </g>
+    <circle cx="100" cy="178" r="56" stroke-width="1"/>
+    <circle cx="100" cy="178" r="48" stroke-width="0.4" stroke-opacity="0.5"/>
+    <path d="M 100.00 132.00 L 127.04 215.21 L 56.25 163.79 L 143.75 163.79 L 72.96 215.21 Z" stroke-width="1"/>
+    <circle cx="100.00" cy="128.00" r="1.2" fill="#d4a857" stroke="none"/>
+    <circle cx="147.55" cy="162.55" r="1.2" fill="#d4a857" stroke="none"/>
+    <circle cx="129.39" cy="218.45" r="1.2" fill="#d4a857" stroke="none"/>
+    <circle cx="70.61" cy="218.45" r="1.2" fill="#d4a857" stroke="none"/>
+    <circle cx="52.45" cy="162.55" r="1.2" fill="#d4a857" stroke="none"/>
+    <ellipse cx="100" cy="178" rx="6" ry="3" stroke-width="0.7"/>
+    <circle cx="100" cy="178" r="1.4" fill="#d4a857" stroke="none"/>
+    <g transform="translate(100 254)" stroke-width="0.85">
+      <g transform="rotate(22)">
+        <circle cx="-12" cy="0" r="4"/>
+        <line x1="-8" y1="0" x2="16" y2="0"/>
+        <line x1="12" y1="0" x2="12" y2="4"/>
+        <line x1="16" y1="0" x2="16" y2="4"/>
+      </g>
+      <g transform="rotate(-22)">
+        <circle cx="-12" cy="0" r="4"/>
+        <line x1="-8" y1="0" x2="16" y2="0"/>
+        <line x1="12" y1="0" x2="12" y2="4"/>
+        <line x1="16" y1="0" x2="16" y2="4"/>
+      </g>
+    </g>
+  </g>
+  <g transform="translate(100 292)">
+    <line x1="-60" y1="0" x2="-12" y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="12"  y1="0" x2="60"  y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.6"/>
+    <path d="M -4 0 L 0 -4 L 4 0 L 0 4 Z" fill="none" stroke="#d4a857" stroke-width="0.5"/>
+    <circle r="1.1" fill="#d4a857"/>
+  </g>
+</svg>

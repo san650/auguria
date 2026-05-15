@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 320">
+  <defs>
+    <radialGradient id="bgback" cx="50%" cy="42%" r="70%">
+      <stop offset="0%" stop-color="#1c1750"/>
+      <stop offset="55%" stop-color="#0a0d2a"/>
+      <stop offset="100%" stop-color="#06081f"/>
+    </radialGradient>
+  </defs>
+  <rect x="0" y="0" width="200" height="320" fill="url(#bgback)"/>
+  <rect x="6"  y="6"  width="188" height="308" rx="8" fill="none" stroke="#d4a857" stroke-width="1.2"/>
+  <rect x="13" y="13" width="174" height="294" rx="5" fill="none" stroke="#d4a857" stroke-width="0.5" stroke-opacity="0.55"/>
+  <rect x="18" y="18" width="164" height="284" rx="3" fill="none" stroke="#d4a857" stroke-width="0.3" stroke-opacity="0.35"/>
+  <g fill="none" stroke="#d4a857" stroke-width="0.6">
+    <g transform="translate(22 22)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(178 22)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(22 298)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(178 298)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+  </g>
+  <g transform="translate(100 42)">
+    <line x1="-50" y1="0" x2="-15" y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.65"/>
+    <line x1="15"  y1="0" x2="50"  y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.65"/>
+    <text text-anchor="middle" fill="#d4a857" font-family="Cinzel, serif" font-size="9" letter-spacing="7" y="3">AVGVRIA</text>
+  </g>
+  <g transform="translate(100 168)" fill="none" stroke="#d4a857">
+    <circle r="74" stroke-width="0.6" stroke-opacity="0.5"/>
+    <circle r="68" stroke-width="0.3" stroke-opacity="0.3"/>
+    <circle r="60" stroke-width="0.5" stroke-opacity="0.45"/>
+    <g stroke-width="0.3" stroke-opacity="0.5">
+      <line x1="0"   y1="-68" x2="0"   y2="-60"/>
+      <line x1="34"  y1="-58.9" x2="30" y2="-52"/>
+      <line x1="58.9" y1="-34" x2="52" y2="-30"/>
+      <line x1="68"  y1="0"   x2="60"  y2="0"/>
+      <line x1="58.9" y1="34" x2="52" y2="30"/>
+      <line x1="34"  y1="58.9" x2="30" y2="52"/>
+      <line x1="0"   y1="68"  x2="0"   y2="60"/>
+      <line x1="-34" y1="58.9" x2="-30" y2="52"/>
+      <line x1="-58.9" y1="34" x2="-52" y2="30"/>
+      <line x1="-68" y1="0"   x2="-60" y2="0"/>
+      <line x1="-58.9" y1="-34" x2="-52" y2="-30"/>
+      <line x1="-34" y1="-58.9" x2="-30" y2="-52"/>
+    </g>
+    <path d="M 0 -46 L 7 -7 L 46 0 L 7 7 L 0 46 L -7 7 L -46 0 L -7 -7 Z" stroke-width="0.7" stroke-opacity="0.85"/>
+    <path d="M 0 -32 L 4 -4 L 32 0 L 4 4 L 0 32 L -4 4 L -32 0 L -4 -4 Z" stroke-width="0.5" stroke-opacity="0.6"/>
+    <circle r="16" stroke-width="0.7" stroke-opacity="0.85"/>
+    <circle r="12" stroke-width="0.3" stroke-opacity="0.5"/>
+    <circle r="4" fill="#d4a857" opacity="0.85"/>
+    <g fill="#d4a857" opacity="0.85" stroke="none">
+      <path d="M 0 -86 L 1.5 -80 L 7 -79 L 1.8 -78 L 0 -73 L -1.8 -78 L -7 -79 L -1.5 -80 Z"/>
+      <path d="M 86 0 L 80 1.5 L 79 7 L 78 1.8 L 73 0 L 78 -1.8 L 79 -7 L 80 -1.5 Z"/>
+      <path d="M 0 86 L 1.5 80 L 7 79 L 1.8 78 L 0 73 L -1.8 78 L -7 79 L -1.5 80 Z"/>
+      <path d="M -86 0 L -80 1.5 L -79 7 L -78 1.8 L -73 0 L -78 -1.8 L -79 -7 L -80 -1.5 Z"/>
+    </g>
+    <g fill="#d4a857" opacity="0.55" stroke="none">
+      <circle cx="62" cy="-62" r="0.9"/>
+      <circle cx="-62" cy="-62" r="0.9"/>
+      <circle cx="62" cy="62" r="0.9"/>
+      <circle cx="-62" cy="62" r="0.9"/>
+    </g>
+  </g>
+  <g transform="translate(100 290)">
+    <line x1="-50" y1="0" x2="-12" y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.65"/>
+    <line x1="12"  y1="0" x2="50"  y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.65"/>
+    <g>
+      <circle r="4" fill="none" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.7"/>
+      <circle r="1.4" fill="#d4a857"/>
+    </g>
+  </g>
+</svg>

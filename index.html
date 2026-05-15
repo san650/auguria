@@ -136,6 +136,10 @@
         </span>
         Tabla de los sueños
       </a>
+      <div class="permission-banner" id="permission-banner" hidden>
+        <p class="permission-banner__text">Toca para despertar la visión</p>
+        <button type="button" class="permission-banner__btn" id="permission-banner-btn">Despertar</button>
+      </div>
     </header>
 
     <!-- ─────────────────  CARDS  ───────────────── -->
@@ -241,6 +245,47 @@
       <p class="colophon__note">La tradición popular asocia cada sueño a una cifra. Auguria los recoge como reliquia, no como vaticinio.</p>
       <p class="colophon__fineprint">Las imágenes de la noche</p>
     </footer>
+  </section>
+
+  <!-- ─────────────────  VISIÓN VIEW  ───────────────── -->
+  <section class="vision" data-view="vision" aria-labelledby="vision-numerology-title">
+    <a href="#/" class="vision__back" aria-label="Volver">
+      <svg viewBox="0 0 28 12" aria-hidden="true">
+        <path d="M27 6 H4 M9 1 L3 6 L9 11" fill="none" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Volver</span>
+    </a>
+
+    <div class="vision__stage" data-state="dormant" data-card="">
+
+      <!-- Flippable tarot card. Starts full-bleed; flips at 'face'; shrinks
+           to the upper-left at 'stationed'. -->
+      <div class="vision__card" aria-hidden="true">
+        <div class="vision__card__inner">
+          <div class="vision__card__face vision__card__face--back"></div>
+          <div class="vision__card__face vision__card__face--front"></div>
+        </div>
+      </div>
+
+      <!-- Header row: small card sits on the left at stationed; head text to its right. -->
+      <div class="vision__head">
+        <p class="vision__eyebrow">El número que el día te ofrece</p>
+        <p class="vision__number" id="vision-number" aria-live="polite"></p>
+      </div>
+
+      <div class="vision__panel vision__panel--dream">
+        <p class="vision__label">Sueño asociado</p>
+        <p class="vision__dream" id="vision-dream"></p>
+      </div>
+
+      <div class="vision__panel vision__panel--numerology">
+        <p class="vision__label">Numerología</p>
+        <h1 id="vision-numerology-title" class="vision__numerology-title"></h1>
+        <p class="vision__reduction" id="vision-reduction"></p>
+        <p class="vision__keywords" id="vision-keywords"></p>
+        <p class="vision__body" id="vision-body"></p>
+      </div>
+    </div>
   </section>
 
   <!-- ─────────────────  JUGADA · drawer (body-level so it pins to the viewport)  ───────────────── -->

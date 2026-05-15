@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 320">
+  <defs>
+    <radialGradient id="bg3" cx="50%" cy="42%" r="70%">
+      <stop offset="0%" stop-color="#1c1750"/>
+      <stop offset="55%" stop-color="#0a0d2a"/>
+      <stop offset="100%" stop-color="#06081f"/>
+    </radialGradient>
+  </defs>
+  <rect x="0" y="0" width="200" height="320" fill="url(#bg3)"/>
+  <rect x="6"  y="6"  width="188" height="308" rx="8" fill="none" stroke="#d4a857" stroke-width="1.2"/>
+  <rect x="13" y="13" width="174" height="294" rx="5" fill="none" stroke="#d4a857" stroke-width="0.5" stroke-opacity="0.55"/>
+  <rect x="18" y="18" width="164" height="284" rx="3" fill="none" stroke="#d4a857" stroke-width="0.3" stroke-opacity="0.35"/>
+  <g fill="none" stroke="#d4a857" stroke-width="0.6">
+    <g transform="translate(22 22)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(178 22)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(22 298)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(178 298)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+  </g>
+  <g transform="translate(100 36)">
+    <line x1="-82" y1="0" x2="-58" y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.65"/>
+    <line x1="58"  y1="0" x2="82"  y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.65"/>
+    <text text-anchor="middle" fill="#d4a857" font-family="Cinzel, serif" font-size="10" letter-spacing="2.4" y="4">LA EMPERATRIZ</text>
+  </g>
+  <g fill="none" stroke="#d4a857" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9">
+    <circle cx="100.00" cy="148.00" r="36" stroke-width="0.95"/>
+    <circle cx="100.00" cy="148.00" r="3"  stroke-width="0.55"/>
+    <circle cx="100.00" cy="148.00" r="0.9" fill="#d4a857" stroke="none"/>
+    <circle cx="79.95" cy="181.00" r="36" stroke-width="0.95"/>
+    <circle cx="79.95" cy="181.00" r="3"  stroke-width="0.55"/>
+    <circle cx="79.95" cy="181.00" r="0.9" fill="#d4a857" stroke="none"/>
+    <circle cx="120.05" cy="181.00" r="36" stroke-width="0.95"/>
+    <circle cx="120.05" cy="181.00" r="3"  stroke-width="0.55"/>
+    <circle cx="120.05" cy="181.00" r="0.9" fill="#d4a857" stroke="none"/>
+    <path d="M 100.00 165.00 L 90.00 180.00 L 110.00 180.00 Z" stroke-width="0.7"/>
+    <circle cx="100" cy="175" r="1.4" fill="#d4a857" stroke="none"/>
+    <g fill="#d4a857" opacity="0.55" stroke="none"><circle cx="100.00" cy="103.00" r="0.7"/><circle cx="136.00" cy="112.65" r="0.7"/><circle cx="162.35" cy="139.00" r="0.7"/><circle cx="172.00" cy="175.00" r="0.7"/><circle cx="162.35" cy="211.00" r="0.7"/><circle cx="136.00" cy="237.35" r="0.7"/><circle cx="100.00" cy="247.00" r="0.7"/><circle cx="64.00" cy="237.35" r="0.7"/><circle cx="37.65" cy="211.00" r="0.7"/><circle cx="28.00" cy="175.00" r="0.7"/><circle cx="37.65" cy="139.00" r="0.7"/><circle cx="64.00" cy="112.65" r="0.7"/></g>
+  </g>
+  <g transform="translate(100 292)">
+    <line x1="-60" y1="0" x2="-12" y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="12"  y1="0" x2="60"  y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.6"/>
+    <path d="M -4 0 L 0 -4 L 4 0 L 0 4 Z" fill="none" stroke="#d4a857" stroke-width="0.5"/>
+    <circle r="1.1" fill="#d4a857"/>
+  </g>
+</svg>

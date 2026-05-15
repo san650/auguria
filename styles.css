@@ -744,8 +744,12 @@ body {
    [data-active-view] on <body>. Hide the inactive view; the
    active one keeps its native display value.
    ───────────────────────────────────────────────────────────── */
-body[data-active-view="dreams"] [data-view="home"]   { display: none; }
-body[data-active-view="home"]   [data-view="dreams"] { display: none; }
+body[data-active-view="home"]   [data-view="dreams"],
+body[data-active-view="home"]   [data-view="vision"],
+body[data-active-view="dreams"] [data-view="home"],
+body[data-active-view="dreams"] [data-view="vision"],
+body[data-active-view="vision"] [data-view="home"],
+body[data-active-view="vision"] [data-view="dreams"] { display: none; }
 
 /* ─────────────────────────────────────────────────────────────
    Entry button — sits at the foot of the masthead, mirrors the
@@ -1741,7 +1745,8 @@ body[data-drawer-state="expanded"] .suenos { --drawer-clearance: 240px; }
 }
 /* The selected date doesn't influence anything in the Sueños view, and
    the ribbon would overlap the sticky search bar there — so hide it. */
-body[data-active-view="dreams"] .date-ribbon {
+body[data-active-view="dreams"] .date-ribbon,
+body[data-active-view="vision"] .date-ribbon {
   transform: translateY(-110%);
   pointer-events: none;
 }
@@ -2033,4 +2038,291 @@ body[data-off-day="true"] .masthead {
   color: var(--vellum-soft);
   opacity: 0.65;
   text-align: center;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Visión view
+   Choreography: card-back (full bleed) → flip → station (small,
+   top-left) → number cascade → dream → numerology.
+   ───────────────────────────────────────────────────────────── */
+.vision {
+  position: relative;
+  min-height: 100dvh;
+  padding: 0 var(--pad) clamp(2rem, 6vh, 4rem);
+  max-width: var(--max);
+  margin: 0 auto;
+  z-index: 1;
+  overflow-x: hidden;
+}
+.vision__back {
+  position: relative;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: clamp(1.25rem, 4vw, 2rem) 0 1rem;
+  font-family: var(--font-serif);
+  font-size: 0.66rem;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-decoration: none;
+  opacity: 0.85;
+  transition: color 0.3s, opacity 0.3s, transform 0.3s;
+}
+.vision__back:hover, .vision__back:focus-visible {
+  color: var(--gold-bright);
+  opacity: 1;
+  transform: translateX(-3px);
+  outline: 0;
+}
+.vision__back svg { width: 28px; height: 12px; display: block; }
+
+.vision__stage {
+  position: relative;
+  min-height: calc(100dvh - 5rem);
+}
+
+/* ── The flippable card ──────────────────────────────────────
+   Card pose (back/face): centered in viewport, ~70vw wide,
+   2:3.2 aspect.
+   Background pose (background/number/dream/settled): expanded
+   to fill the entire viewport at low opacity, behind content.   */
+.vision__card {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transform-origin: center center;
+  width: clamp(16rem, 70vw, 22rem);
+  height: clamp(25.6rem, 112vw, 35.2rem);
+  perspective: 1500px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  transition:
+    opacity 0.85s ease-out,
+    top 1.7s cubic-bezier(0.55, 0, 0.2, 1),
+    left 1.7s cubic-bezier(0.55, 0, 0.2, 1),
+    width 1.7s cubic-bezier(0.55, 0, 0.2, 1),
+    height 1.7s cubic-bezier(0.55, 0, 0.2, 1),
+    transform 1.7s cubic-bezier(0.55, 0, 0.2, 1);
+}
+.vision__card__inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 1.1s cubic-bezier(0.45, 0, 0.55, 1);
+}
+/* On re-entry the card was at rotateY(180deg) from the previous play.
+   Setting state to 'dormant' would otherwise animate it back to 0 over
+   1.1s (a reverse flip), then face would flip it forward again — two
+   visible flips. Snap the reset instead. */
+.vision__stage[data-state="dormant"] .vision__card,
+.vision__stage[data-state="dormant"] .vision__card__inner {
+  transition: none;
+}
+.vision__card__face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 8px;
+  box-shadow:
+    0 14px 40px -8px rgba(0,0,0,0.65),
+    0 0 22px rgba(212,168,87,0.16);
+}
+.vision__card__face--back  { background-image: url("icons/tarot/back.svg"); }
+.vision__card__face--front { transform: rotateY(180deg); }
+
+.vision__stage[data-card="0"] .vision__card__face--front { background-image: url("icons/tarot/0.svg"); }
+.vision__stage[data-card="1"] .vision__card__face--front { background-image: url("icons/tarot/1.svg"); }
+.vision__stage[data-card="2"] .vision__card__face--front { background-image: url("icons/tarot/2.svg"); }
+.vision__stage[data-card="3"] .vision__card__face--front { background-image: url("icons/tarot/3.svg"); }
+.vision__stage[data-card="4"] .vision__card__face--front { background-image: url("icons/tarot/4.svg"); }
+.vision__stage[data-card="5"] .vision__card__face--front { background-image: url("icons/tarot/5.svg"); }
+.vision__stage[data-card="6"] .vision__card__face--front { background-image: url("icons/tarot/6.svg"); }
+.vision__stage[data-card="7"] .vision__card__face--front { background-image: url("icons/tarot/7.svg"); }
+.vision__stage[data-card="8"] .vision__card__face--front { background-image: url("icons/tarot/8.svg"); }
+.vision__stage[data-card="9"] .vision__card__face--front { background-image: url("icons/tarot/9.svg"); }
+.vision__stage[data-card="10"] .vision__card__face--front { background-image: url("icons/tarot/10.svg"); }
+.vision__stage[data-card="11"] .vision__card__face--front { background-image: url("icons/tarot/11.svg"); }
+
+/* Card visible from 'back' onwards (fully opaque while still a card) */
+.vision__stage[data-state="back"]      .vision__card,
+.vision__stage[data-state="face"]      .vision__card { opacity: 1; }
+
+/* Flip from 'face' onwards */
+.vision__stage[data-state="face"]       .vision__card__inner,
+.vision__stage[data-state="background"] .vision__card__inner,
+.vision__stage[data-state="number"]     .vision__card__inner,
+.vision__stage[data-state="dream"]      .vision__card__inner,
+.vision__stage[data-state="settled"]    .vision__card__inner {
+  transform: rotateY(180deg);
+}
+
+/* Background pose: zoom out to fill the viewport, dim down so it
+   reads as backdrop. From 'background' state onwards. */
+.vision__stage[data-state="background"] .vision__card,
+.vision__stage[data-state="number"]     .vision__card,
+.vision__stage[data-state="dream"]      .vision__card,
+.vision__stage[data-state="settled"]    .vision__card {
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  transform: none;
+  opacity: 0.22;
+}
+
+/* In background pose the face should fill the viewport — switch
+   from contain (card pose) to cover and drop the shadow/radius. */
+.vision__stage[data-state="background"] .vision__card__face,
+.vision__stage[data-state="number"]     .vision__card__face,
+.vision__stage[data-state="dream"]      .vision__card__face,
+.vision__stage[data-state="settled"]    .vision__card__face {
+  background-size: cover;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+/* ── Head row + content panels ───────────────────────────────
+   These sit above the card-as-background (z-index 1 vs the
+   background card at z-index 0). Each has its own translucent
+   panel so the text remains readable over the geometric sigil.  */
+.vision__head,
+.vision__panel {
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  background: linear-gradient(180deg, rgba(28,23,80,0.88) 0%, rgba(10,13,42,0.93) 100%);
+  border: 1px solid rgba(212,168,87,0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.vision__head {
+  margin: clamp(1.5rem, 5vh, 2.5rem) 0 0;
+  padding: clamp(1.2rem, 4vw, 1.6rem) clamp(1rem, 3vw, 1.4rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.vision__eyebrow {
+  font-family: var(--font-serif);
+  font-size: 0.6rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0;
+}
+.vision__number {
+  font-family: var(--font-display);
+  font-size: clamp(3.6rem, 16vw, 5.6rem);
+  line-height: 1;
+  color: var(--vellum);
+  margin: 0.2rem 0 0;
+  letter-spacing: 0.04em;
+}
+.vision__panel {
+  margin-top: clamp(1rem, 3vw, 1.6rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+  padding: clamp(1rem, 3vw, 1.4rem);
+}
+.vision__label {
+  font-family: var(--font-serif);
+  font-size: 0.6rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0;
+}
+.vision__dream {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 5vw, 2rem);
+  color: var(--vellum);
+  margin: 0;
+}
+.vision__numerology-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 6vw, 2.4rem);
+  color: var(--vellum);
+  margin: 0;
+}
+.vision__reduction,
+.vision__keywords,
+.vision__body { margin: 0; color: var(--vellum); }
+.vision__reduction { font-size: 0.85rem; color: var(--gold-bright); }
+.vision__keywords  { font-style: italic; color: var(--celeste); }
+.vision__body      { line-height: 1.55; }
+
+/* Cascade reveal */
+.vision__stage[data-state="number"]  .vision__head,
+.vision__stage[data-state="dream"]   .vision__head,
+.vision__stage[data-state="settled"] .vision__head { opacity: 1; transform: none; }
+
+.vision__stage[data-state="dream"]   .vision__panel--dream,
+.vision__stage[data-state="settled"] .vision__panel--dream { opacity: 1; transform: none; }
+
+.vision__stage[data-state="settled"] .vision__panel--numerology { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .vision__card,
+  .vision__card__inner,
+  .vision__head,
+  .vision__panel { transition: none !important; }
+}
+
+/* Permission banner — shown only on home, only when the iOS motion
+   permission decision is still unknown. Frontend-design pass refines. */
+.permission-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 1.25rem auto 0;
+  padding: 0.9rem 1.2rem 1rem;
+  border: 1px solid rgba(212,168,87,0.4);
+  background:
+    radial-gradient(ellipse at top, rgba(212,168,87,0.1) 0%, transparent 70%),
+    linear-gradient(180deg, rgba(28,23,80,0.36) 0%, rgba(10,13,42,0.5) 100%);
+  max-width: 18rem;
+  text-align: center;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.permission-banner[hidden] { display: none; }
+.permission-banner__text {
+  font-family: var(--font-serif);
+  font-size: 0.68rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0;
+}
+.permission-banner__btn {
+  font-family: var(--font-serif);
+  font-size: 0.66rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--gold);
+  padding: 0.55rem 1.4rem;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+.permission-banner__btn:hover,
+.permission-banner__btn:focus-visible {
+  background: var(--gold-bright);
+  outline: 0;
 }

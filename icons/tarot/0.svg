@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 320">
+  <defs>
+    <radialGradient id="bg0" cx="50%" cy="42%" r="70%">
+      <stop offset="0%" stop-color="#1c1750"/>
+      <stop offset="55%" stop-color="#0a0d2a"/>
+      <stop offset="100%" stop-color="#06081f"/>
+    </radialGradient>
+  </defs>
+  <rect x="0" y="0" width="200" height="320" fill="url(#bg0)"/>
+  <rect x="6"  y="6"  width="188" height="308" rx="8" fill="none" stroke="#d4a857" stroke-width="1.2"/>
+  <rect x="13" y="13" width="174" height="294" rx="5" fill="none" stroke="#d4a857" stroke-width="0.5" stroke-opacity="0.55"/>
+  <rect x="18" y="18" width="164" height="284" rx="3" fill="none" stroke="#d4a857" stroke-width="0.3" stroke-opacity="0.35"/>
+  <g fill="none" stroke="#d4a857" stroke-width="0.6">
+    <g transform="translate(22 22)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(178 22)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(22 298)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+    <g transform="translate(178 298)"><path d="M-4 0 L0 -4 L4 0 L0 4 Z"/><circle r="1" fill="#d4a857"/></g>
+  </g>
+  <g transform="translate(100 36)">
+    <line x1="-82" y1="0" x2="-58" y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.65"/>
+    <line x1="58"  y1="0" x2="82"  y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.65"/>
+    <text text-anchor="middle" fill="#d4a857" font-family="Cinzel, serif" font-size="10" letter-spacing="2.4" y="4">EL LOCO</text>
+  </g>
+  <g fill="none" stroke="#d4a857" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.9">
+    <circle cx="100" cy="170" r="72" stroke-width="0.95"/>
+    <circle cx="100" cy="170" r="64" stroke-width="0.35" stroke-opacity="0.45"/>
+    <circle cx="100" cy="170" r="56" stroke-width="0.3"  stroke-opacity="0.3"/>
+    <path d="M 100.00 161.00 L 101.15 167.23 L 106.36 163.64 L 102.77 168.85 L 109.00 170.00 L 102.77 171.15 L 106.36 176.36 L 101.15 172.77 L 100.00 179.00 L 98.85 172.77 L 93.64 176.36 L 97.23 171.15 L 91.00 170.00 L 97.23 168.85 L 93.64 163.64 L 98.85 167.23 Z" stroke-width="0.85"/>
+    <circle cx="100" cy="170" r="2" fill="#d4a857" stroke="none"/>
+    <line x1="172.00" y1="170.00" x2="180.00" y2="170.00" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="100.00" y1="242.00" x2="100.00" y2="250.00" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="28.00" y1="170.00" x2="20.00" y2="170.00" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="100.00" y1="98.00" x2="100.00" y2="90.00" stroke-width="0.4" stroke-opacity="0.6"/>
+    <circle cx="40" cy="90" r="0.7" fill="#d4a857" stroke="none"/>
+    <circle cx="160" cy="100" r="0.7" fill="#d4a857" stroke="none"/>
+    <circle cx="52" cy="240" r="0.6" fill="#d4a857" stroke="none"/>
+    <circle cx="148" cy="248" r="0.6" fill="#d4a857" stroke="none"/>
+    <circle cx="32" cy="170" r="0.5" fill="#d4a857" stroke="none"/>
+    <circle cx="170" cy="170" r="0.5" fill="#d4a857" stroke="none"/>
+    <circle cx="90" cy="70" r="0.4" fill="#d4a857" stroke="none"/>
+    <circle cx="110" cy="70" r="0.4" fill="#d4a857" stroke="none"/>
+    <circle cx="90" cy="270" r="0.4" fill="#d4a857" stroke="none"/>
+    <circle cx="110" cy="270" r="0.4" fill="#d4a857" stroke="none"/>
+  </g>
+  <g transform="translate(100 292)">
+    <line x1="-60" y1="0" x2="-12" y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.6"/>
+    <line x1="12"  y1="0" x2="60"  y2="0" stroke="#d4a857" stroke-width="0.4" stroke-opacity="0.6"/>
+    <path d="M -4 0 L 0 -4 L 4 0 L 0 4 Z" fill="none" stroke="#d4a857" stroke-width="0.5"/>
+    <circle r="1.1" fill="#d4a857"/>
+  </g>
+</svg>

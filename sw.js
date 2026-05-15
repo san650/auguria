@@ -1,5 +1,5 @@
 /* Auguria service worker — offline-first cache. */
-const VERSION = "auguria-v22";
+const VERSION = "auguria-v30";
 const ASSETS = [
   "./",
   "./index.html",
@@ -31,6 +31,19 @@ const ASSETS = [
   "./icons/splash/splash-640x1136.png",
   "./icons/splash/splash-750x1334.png",
   "./icons/splash/splash-828x1792.png",
+  "./icons/tarot/0.svg",
+  "./icons/tarot/1.svg",
+  "./icons/tarot/2.svg",
+  "./icons/tarot/3.svg",
+  "./icons/tarot/4.svg",
+  "./icons/tarot/5.svg",
+  "./icons/tarot/6.svg",
+  "./icons/tarot/7.svg",
+  "./icons/tarot/8.svg",
+  "./icons/tarot/9.svg",
+  "./icons/tarot/10.svg",
+  "./icons/tarot/11.svg",
+  "./icons/tarot/back.svg",
 ];
 
 self.addEventListener("install", (event) => {

@@ -249,6 +249,83 @@ const NUMEROLOGY = {
   },
 };
 
+// ── VISIÓN · daily omen number + composition ─────────────────
+function pickVisionNumber(date) {
+  const rng = rngFor(date, "vision");
+  const n = Math.floor(rng() * 100);
+  return String(n).padStart(2, "0"); // "00".."99"
+}
+
+function getVisionData(numKey /* "00".."99" */) {
+  const n = Number(numKey);
+  const reduced = reduceNumber(n);
+  const numerology = NUMEROLOGY[reduced] ?? NUMEROLOGY[0];
+  const dream = SUENOS_TWO.find(([num]) => num === numKey);
+  return {
+    numKey,
+    reduced,
+    isMaster: reduced === 11 || reduced === 22 || reduced === 33,
+    dreamName: dream?.[1] ?? "",
+    dreamIconKey: dream?.[2] ?? "",
+    numerologyTitle: numerology.title,
+    numerologyKeywords: numerology.keywords,
+    numerologyBody: numerology.body,
+  };
+}
+
+function setText(id, value) {
+  const node = document.getElementById(id);
+  if (node) node.textContent = value;
+}
+
+function playVisionAnimation() {
+  const stage = document.querySelector(".vision__stage");
+  if (!stage) return;
+
+  const numKey = pickVisionNumber(_selectedDate);
+  const data = getVisionData(numKey);
+
+  setText("vision-number",           data.numKey);
+  setText("vision-dream",            data.dreamName);
+  setText("vision-numerology-title", data.numerologyTitle);
+  setText("vision-reduction",
+    Number(data.numKey) === data.reduced
+      ? "Cifra raíz"
+      : `Reduce a ${data.reduced}${data.isMaster ? " · número maestro" : ""}`);
+  setText("vision-keywords",         data.numerologyKeywords);
+  setText("vision-body",             data.numerologyBody);
+
+  stage.dataset.card = String(Number(data.numKey) % 12);
+
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    stage.dataset.state = "settled";
+    return;
+  }
+
+  // Reset, force reflow so re-entries re-trigger the keyframes, then
+  // advance through the choreography:
+  //   dormant → back (card-back full bleed)
+  //          → face (flip to front, still full bleed)
+  //          → background (card zooms out to fill the viewport, dims to backdrop)
+  //          → number (eyebrow + number panel cascades in over the backdrop)
+  //          → dream (dream panel cascades in)
+  //          → settled (numerology panel cascades in)
+  stage.dataset.state = "dormant";
+  void stage.offsetWidth;
+  if (_visionTimers) _visionTimers.forEach(clearTimeout);
+  _visionTimers = [];
+  const at = (ms, state) =>
+    _visionTimers.push(setTimeout(() => { stage.dataset.state = state; }, ms));
+  requestAnimationFrame(() => { stage.dataset.state = "back"; });
+  at(1000, "face");        // flip starts (1.1s CSS rotation)
+  at(3400, "background");  // zoom out to backdrop (1.7s transition) — face lingers ~2.4s
+  at(5300, "number");      // number panel cascades in (zoom-out lands ~5100ms)
+  at(5950, "dream");       // dream panel
+  at(6600, "settled");     // numerology panel
+}
+
+let _visionTimers = [];
+
 // ── DATE LINE ────────────────────────────────────────────────
 // Treat a civil-date key as midday UTC so DST seams don't pull the
 // weekday across a boundary when we feed it back through Intl.
@@ -1033,10 +1110,13 @@ function toggleDrawer() {
 
 // ── HASH ROUTER ──────────────────────────────────────────────
 function syncRoute() {
-  const view = location.hash === "#/dreams" ? "dreams" : "home";
+  let view = "home";
+  if (location.hash === "#/dreams")      view = "dreams";
+  else if (location.hash === "#/vision") view = "vision";
   document.body.dataset.activeView = view;
-  // Reset scroll when switching views — the two views are independently long.
+  // Reset scroll when switching views — the views are independently long.
   window.scrollTo({ top: 0, behavior: "instant" });
+  if (view === "vision") playVisionAnimation();
 }
 window.addEventListener("hashchange", syncRoute);
 
@@ -1177,6 +1257,123 @@ calendarDialog?.addEventListener("click", (e) => {
   if (e.target === calendarDialog) calendarDialog.close();
 });
 dateRibbonReturn?.addEventListener("click", () => commitSelectedDate(todayKey()));
+
+// ── SHAKE DETECTION ──────────────────────────────────────────
+const SHAKE_THRESHOLD = 18;     // m/s² delta to count as a spike
+const SHAKE_SPIKES    = 3;      // spikes within window required
+const SHAKE_WINDOW    = 600;    // ms
+const SHAKE_COOLDOWN  = 1200;   // ms after firing
+
+let _shakeLastMag = 0;
+let _shakeSpikeTimes = [];
+let _shakeLockedUntil = 0;
+
+function handleMotion(ev) {
+  const a = ev.accelerationIncludingGravity;
+  if (!a) return;
+  const mag = Math.sqrt((a.x || 0) ** 2 + (a.y || 0) ** 2 + (a.z || 0) ** 2);
+  const delta = Math.abs(mag - _shakeLastMag);
+  _shakeLastMag = mag;
+
+  const now = Date.now();
+  if (now < _shakeLockedUntil) return;
+  if (delta <= SHAKE_THRESHOLD) return;
+
+  _shakeSpikeTimes.push(now);
+  _shakeSpikeTimes = _shakeSpikeTimes.filter(t => now - t <= SHAKE_WINDOW);
+  if (_shakeSpikeTimes.length >= SHAKE_SPIKES) {
+    _shakeSpikeTimes = [];
+    _shakeLockedUntil = now + SHAKE_COOLDOWN;
+    enterVision();
+  }
+}
+
+function attachMotionListener() {
+  window.addEventListener("devicemotion", handleMotion);
+}
+
+function enterVision() {
+  if (location.hash !== "#/vision") {
+    location.hash = "#/vision";
+  } else {
+    playVisionAnimation();
+  }
+}
+
+function initShakeDetection() {
+  if (typeof DeviceMotionEvent === "undefined") return;
+  if (typeof DeviceMotionEvent.requestPermission !== "function") {
+    attachMotionListener();
+    return;
+  }
+  initIosPermissionFlow();
+}
+
+const MOTION_STORE = "auguria-vision-motion";
+
+function initIosPermissionFlow() {
+  const stored = localStorage.getItem(MOTION_STORE);
+  if (stored === "granted") {
+    // Re-grant silently on next user gesture
+    document.body.addEventListener("pointerdown", async function reGrant() {
+      document.body.removeEventListener("pointerdown", reGrant);
+      try {
+        const r = await DeviceMotionEvent.requestPermission();
+        if (r === "granted") attachMotionListener();
+      } catch (_) { /* ignore */ }
+    }, { once: true });
+  } else if (stored === "denied") {
+    // Stay silent; easter-egg is the only entry path
+  } else {
+    showPermissionBanner();
+  }
+}
+
+function showPermissionBanner() {
+  const banner = document.getElementById("permission-banner");
+  if (banner) banner.hidden = false;
+}
+
+function hidePermissionBanner() {
+  const banner = document.getElementById("permission-banner");
+  if (banner) banner.hidden = true;
+}
+
+async function requestMotionPermission() {
+  try {
+    const r = await DeviceMotionEvent.requestPermission();
+    if (r === "granted") {
+      localStorage.setItem(MOTION_STORE, "granted");
+      attachMotionListener();
+    } else {
+      localStorage.setItem(MOTION_STORE, "denied");
+    }
+  } catch (_) {
+    localStorage.setItem(MOTION_STORE, "denied");
+  } finally {
+    hidePermissionBanner();
+  }
+}
+
+document.getElementById("permission-banner-btn")
+  ?.addEventListener("click", requestMotionPermission);
+
+initShakeDetection();
+
+// ── EASTER-EGG · masthead triple-tap → vision ────────────────
+const MASTHEAD_TAP_WINDOW = 500; // ms
+let _mastheadTaps = 0;
+let _mastheadTimer = null;
+document.querySelector(".masthead__title")?.addEventListener("click", () => {
+  _mastheadTaps += 1;
+  if (_mastheadTimer) clearTimeout(_mastheadTimer);
+  _mastheadTimer = setTimeout(() => { _mastheadTaps = 0; }, MASTHEAD_TAP_WINDOW);
+  if (_mastheadTaps >= 3) {
+    _mastheadTaps = 0;
+    clearTimeout(_mastheadTimer);
+    enterVision();
+  }
+});
 
 // ── BOOT ─────────────────────────────────────────────────────
 document.getElementById("dateline-text").textContent = spanishDateLine();
