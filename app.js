@@ -1258,40 +1258,6 @@ calendarDialog?.addEventListener("click", (e) => {
 });
 dateRibbonReturn?.addEventListener("click", () => commitSelectedDate(todayKey()));
 
-// ── SHAKE DETECTION ──────────────────────────────────────────
-const SHAKE_THRESHOLD = 18;     // m/s² delta to count as a spike
-const SHAKE_SPIKES    = 3;      // spikes within window required
-const SHAKE_WINDOW    = 600;    // ms
-const SHAKE_COOLDOWN  = 1200;   // ms after firing
-
-let _shakeLastMag = 0;
-let _shakeSpikeTimes = [];
-let _shakeLockedUntil = 0;
-
-function handleMotion(ev) {
-  const a = ev.accelerationIncludingGravity;
-  if (!a) return;
-  const mag = Math.sqrt((a.x || 0) ** 2 + (a.y || 0) ** 2 + (a.z || 0) ** 2);
-  const delta = Math.abs(mag - _shakeLastMag);
-  _shakeLastMag = mag;
-
-  const now = Date.now();
-  if (now < _shakeLockedUntil) return;
-  if (delta <= SHAKE_THRESHOLD) return;
-
-  _shakeSpikeTimes.push(now);
-  _shakeSpikeTimes = _shakeSpikeTimes.filter(t => now - t <= SHAKE_WINDOW);
-  if (_shakeSpikeTimes.length >= SHAKE_SPIKES) {
-    _shakeSpikeTimes = [];
-    _shakeLockedUntil = now + SHAKE_COOLDOWN;
-    enterVision();
-  }
-}
-
-function attachMotionListener() {
-  window.addEventListener("devicemotion", handleMotion);
-}
-
 function enterVision() {
   if (location.hash !== "#/vision") {
     location.hash = "#/vision";
@@ -1299,66 +1265,6 @@ function enterVision() {
     playVisionAnimation();
   }
 }
-
-function initShakeDetection() {
-  if (typeof DeviceMotionEvent === "undefined") return;
-  if (typeof DeviceMotionEvent.requestPermission !== "function") {
-    attachMotionListener();
-    return;
-  }
-  initIosPermissionFlow();
-}
-
-const MOTION_STORE = "auguria-vision-motion";
-
-function initIosPermissionFlow() {
-  const stored = localStorage.getItem(MOTION_STORE);
-  if (stored === "granted") {
-    // Re-grant silently on next user gesture
-    document.body.addEventListener("pointerdown", async function reGrant() {
-      document.body.removeEventListener("pointerdown", reGrant);
-      try {
-        const r = await DeviceMotionEvent.requestPermission();
-        if (r === "granted") attachMotionListener();
-      } catch (_) { /* ignore */ }
-    }, { once: true });
-  } else if (stored === "denied") {
-    // Stay silent; easter-egg is the only entry path
-  } else {
-    showPermissionBanner();
-  }
-}
-
-function showPermissionBanner() {
-  const banner = document.getElementById("permission-banner");
-  if (banner) banner.hidden = false;
-}
-
-function hidePermissionBanner() {
-  const banner = document.getElementById("permission-banner");
-  if (banner) banner.hidden = true;
-}
-
-async function requestMotionPermission() {
-  try {
-    const r = await DeviceMotionEvent.requestPermission();
-    if (r === "granted") {
-      localStorage.setItem(MOTION_STORE, "granted");
-      attachMotionListener();
-    } else {
-      localStorage.setItem(MOTION_STORE, "denied");
-    }
-  } catch (_) {
-    localStorage.setItem(MOTION_STORE, "denied");
-  } finally {
-    hidePermissionBanner();
-  }
-}
-
-document.getElementById("permission-banner-btn")
-  ?.addEventListener("click", requestMotionPermission);
-
-initShakeDetection();
 
 // ── EASTER-EGG · masthead triple-tap → vision ────────────────
 const MASTHEAD_TAP_WINDOW = 500; // ms
