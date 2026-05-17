@@ -402,8 +402,10 @@ function buildCard(game, date) {
 function renderGames() {
   const main = document.getElementById("games");
   const frag = document.createDocumentFragment();
-  for (const game of GAMES) frag.append(buildCard(game, _selectedDate));
+  // Jugada leads — when the user has picks, "Mi jugada" sits above the
+  // daily lottery cards so it's the first thing they see on home.
   frag.append(buildJugadaCard());
+  for (const game of GAMES) frag.append(buildCard(game, _selectedDate));
   main.replaceChildren(frag);
 }
 
@@ -1109,6 +1111,11 @@ function toggleDrawer() {
 }
 
 // ── HASH ROUTER ──────────────────────────────────────────────
+// Set to true after the initial syncRoute() during boot, so that the
+// view-entrance animation only runs on actual navigation — never on
+// first paint (which has its own masthead/card choreography) and never
+// on in-view actions like adding or removing a number.
+let _routeBooted = false;
 function syncRoute() {
   let view = "home";
   if (location.hash === "#/dreams")      view = "dreams";
@@ -1116,6 +1123,20 @@ function syncRoute() {
   document.body.dataset.activeView = view;
   // Reset scroll when switching views — the views are independently long.
   window.scrollTo({ top: 0, behavior: "instant" });
+
+  if (_routeBooted) {
+    const activeEl = document.querySelector(`[data-view="${view}"]`);
+    if (activeEl) {
+      // Re-trigger the entrance animation: drop class, force a reflow,
+      // re-add. Required because CSS animations don't restart on class
+      // re-addition without a layout pass between.
+      activeEl.classList.remove("is-entering");
+      void activeEl.offsetWidth;
+      activeEl.classList.add("is-entering");
+    }
+  }
+  _routeBooted = true;
+
   if (view === "vision") playVisionAnimation();
 }
 window.addEventListener("hashchange", syncRoute);
@@ -1293,6 +1314,81 @@ renderSequence();
 document.body.dataset.drawerState =
   document.querySelector(".seq-drawer")?.dataset.state || "expanded";
 syncRoute();
+
+// ── COSMOS AMBIENT MOTION ────────────────────────────────────
+// Two effects share this block:
+//   1. Scroll parallax — body's --star-py feeds CSS transforms on the
+//      two starfields. Near layer translates more than the far layer,
+//      so the sky reads as depth as the page scrolls.
+//   2. Shooting star — a single .cosmos__comet element gets nudged
+//      around the viewport and re-triggered at random intervals.
+(function wireCosmos() {
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+
+  // ── Scroll parallax ────────────────────────────────────────
+  const body = document.body;
+  let scrollQueued = false;
+  function applyScroll() {
+    scrollQueued = false;
+    body.style.setProperty("--star-py", `${-window.scrollY}px`);
+  }
+  if (!reduceMotion.matches) {
+    window.addEventListener("scroll", () => {
+      if (scrollQueued) return;
+      scrollQueued = true;
+      requestAnimationFrame(applyScroll);
+    }, { passive: true });
+    applyScroll();
+  }
+
+  // ── Shooting star ──────────────────────────────────────────
+  const comet = document.querySelector(".cosmos__comet");
+  if (!comet) return;
+
+  // Comets enter from somewhere off the top of the viewport and travel
+  // diagonally toward the opposite lower quadrant. Randomising the
+  // entry side and slope keeps each one feeling unrepeated.
+  function spawnComet() {
+    if (reduceMotion.matches) return;
+    if (document.hidden) return;
+
+    const w = innerWidth, h = innerHeight;
+    const fromRight = Math.random() < 0.5;
+    let fromX, fromY, toX, toY;
+    if (fromRight) {
+      fromX = w * (0.55 + Math.random() * 0.45) + 80;
+      fromY = -80;
+      toX   = w * (Math.random() * 0.4) - 60;
+      toY   = h * (0.35 + Math.random() * 0.45);
+    } else {
+      fromX = -80;
+      fromY = h * (Math.random() * 0.25);
+      toX   = w * (0.55 + Math.random() * 0.45);
+      toY   = h * (0.4  + Math.random() * 0.45);
+    }
+    const angle = Math.atan2(toY - fromY, toX - fromX) * 180 / Math.PI;
+
+    comet.style.setProperty("--comet-from-x", `${fromX}px`);
+    comet.style.setProperty("--comet-from-y", `${fromY}px`);
+    comet.style.setProperty("--comet-to-x",   `${toX}px`);
+    comet.style.setProperty("--comet-to-y",   `${toY}px`);
+    comet.style.setProperty("--comet-angle",  `${angle}deg`);
+
+    // Re-trigger the animation: pull the class, force a reflow, re-add.
+    comet.classList.remove("is-streaking");
+    void comet.offsetWidth;
+    comet.classList.add("is-streaking");
+  }
+
+  function scheduleNextComet() {
+    // 30–90s between streaks; rare enough that it always feels like
+    // an omen, never wallpaper.
+    const delay = 30000 + Math.random() * 60000;
+    setTimeout(() => { spawnComet(); scheduleNextComet(); }, delay);
+  }
+  // First streak fires sooner so the user might catch one early.
+  setTimeout(() => { spawnComet(); scheduleNextComet(); }, 8000 + Math.random() * 12000);
+})();
 
 // ── PWA ──────────────────────────────────────────────────────
 if ("serviceWorker" in navigator) {
