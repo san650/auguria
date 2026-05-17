@@ -2367,15 +2367,19 @@ body[data-off-day="true"] .masthead {
 .vision__stage[data-state="background"] .vision__card__inner,
 .vision__stage[data-state="number"]     .vision__card__inner,
 .vision__stage[data-state="dream"]      .vision__card__inner,
+.vision__stage[data-state="numerology"] .vision__card__inner,
 .vision__stage[data-state="settled"]    .vision__card__inner {
   transform: rotateY(180deg);
 }
 
 /* Background pose: zoom out to fill the viewport, dim down so it
-   reads as backdrop. From 'background' state onwards. */
+   reads as backdrop. From 'background' state onwards. Every state past
+   that must be listed or the card falls out of background pose and
+   re-animates (the flip + zoom replays). */
 .vision__stage[data-state="background"] .vision__card,
 .vision__stage[data-state="number"]     .vision__card,
 .vision__stage[data-state="dream"]      .vision__card,
+.vision__stage[data-state="numerology"] .vision__card,
 .vision__stage[data-state="settled"]    .vision__card {
   top: 0;
   left: 0;
@@ -2390,6 +2394,7 @@ body[data-off-day="true"] .masthead {
 .vision__stage[data-state="background"] .vision__card__face,
 .vision__stage[data-state="number"]     .vision__card__face,
 .vision__stage[data-state="dream"]      .vision__card__face,
+.vision__stage[data-state="numerology"] .vision__card__face,
 .vision__stage[data-state="settled"]    .vision__card__face {
   background-size: cover;
   box-shadow: none;
@@ -2459,6 +2464,7 @@ body[data-off-day="true"] .masthead {
   color: var(--vellum);
   margin: 0;
 }
+.vision__tarot-name,
 .vision__numerology-title {
   font-family: var(--font-display);
   font-size: clamp(1.6rem, 6vw, 2.4rem);
@@ -2472,15 +2478,22 @@ body[data-off-day="true"] .masthead {
 .vision__keywords  { font-style: italic; color: var(--celeste); }
 .vision__body      { line-height: 1.55; }
 
-/* Cascade reveal */
-.vision__stage[data-state="number"]  .vision__head,
-.vision__stage[data-state="dream"]   .vision__head,
-.vision__stage[data-state="settled"] .vision__head { opacity: 1; transform: none; }
+/* Cascade reveal — each state keeps every prior panel visible so the
+   reading builds up in layers rather than replacing itself.
+   Order: number → dream → numerology → settled (tarot). */
+.vision__stage[data-state="number"]     .vision__head,
+.vision__stage[data-state="dream"]      .vision__head,
+.vision__stage[data-state="numerology"] .vision__head,
+.vision__stage[data-state="settled"]    .vision__head { opacity: 1; transform: none; }
 
-.vision__stage[data-state="dream"]   .vision__panel--dream,
-.vision__stage[data-state="settled"] .vision__panel--dream { opacity: 1; transform: none; }
+.vision__stage[data-state="dream"]      .vision__panel--dream,
+.vision__stage[data-state="numerology"] .vision__panel--dream,
+.vision__stage[data-state="settled"]    .vision__panel--dream { opacity: 1; transform: none; }
 
-.vision__stage[data-state="settled"] .vision__panel--numerology { opacity: 1; transform: none; }
+.vision__stage[data-state="numerology"] .vision__panel--numerology,
+.vision__stage[data-state="settled"]    .vision__panel--numerology { opacity: 1; transform: none; }
+
+.vision__stage[data-state="settled"]    .vision__panel--tarot { opacity: 1; transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .vision__card,

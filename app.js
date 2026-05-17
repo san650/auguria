@@ -249,6 +249,36 @@ const NUMEROLOGY = {
   },
 };
 
+// ── ARCANOS · the 12 Major Arcana the vision deck draws from ─
+// numKey % 12 selects the card index, matching the icons/tarot/N.svg
+// art and the names rendered on those cards.
+const TAROT = {
+  0:  { name: "El Loco",         keywords: "Inicio · Inocencia · Salto",
+        body: "Al borde del precipicio sin mirar atrás. Cifra del comienzo puro, del viaje sin equipaje. Confía en lo desconocido y acepta el riesgo como parte de la fortuna." },
+  1:  { name: "El Mago",         keywords: "Voluntad · Manifestación · Acción",
+        body: "Los cuatro elementos sobre la mesa, dispuestos a obedecer. Día para encarnar lo que hasta ahora era sólo deseo: la voluntad cristaliza en gesto." },
+  2:  { name: "La Sacerdotisa",  keywords: "Intuición · Misterio · Sabiduría",
+        body: "Vela el umbral entre lo visible y lo oculto. Sabe sin haber preguntado. Escucha tu intuición: las respuestas ya están dentro, esperando el silencio que las revele." },
+  3:  { name: "La Emperatriz",   keywords: "Abundancia · Creación · Cuidado",
+        body: "Madre, jardín y cosecha. Símbolo de fertilidad y de creación que florece sin esfuerzo. Atiende el cuerpo, los afectos y aquello que pides cultivar." },
+  4:  { name: "El Emperador",    keywords: "Autoridad · Estructura · Disciplina",
+        body: "Trono firme y palabra dada. Orden, autoridad serena, ley justa. Día para tomar las riendas y construir con disciplina lo que ha de perdurar." },
+  5:  { name: "El Hierofante",   keywords: "Tradición · Enseñanza · Guía",
+        body: "El que custodia lo aprendido y lo transmite. Busca al maestro, o conviértete en uno. Habla del valor de los ritos, de la pertenencia y de la palabra heredada." },
+  6:  { name: "Los Enamorados",  keywords: "Amor · Elección · Unión",
+        body: "Encrucijada del corazón. Toda elección verdadera implica una renuncia. El amor no es destino: es una decisión que se renueva cada día." },
+  7:  { name: "El Carro",        keywords: "Determinación · Triunfo · Dirección",
+        body: "Avance arrollador, dirección clara, riendas en las manos justas. Vence el caos con voluntad templada. La victoria se gana saliendo, no esperando." },
+  8:  { name: "La Fuerza",       keywords: "Coraje · Paciencia · Templanza",
+        body: "No la del músculo, la del temple. Doma la fiera con caricia, no con golpe. Paciencia y compasión son sus armas; el coraje verdadero rara vez alza la voz." },
+  9:  { name: "El Ermitaño",     keywords: "Introspección · Sabiduría · Soledad",
+        body: "Lámpara en la noche, soledad fértil. Quien se retira para mirar mejor. Hoy, escucha tu propio silencio: ahí brilla la luz que buscas afuera." },
+  10: { name: "La Fortuna",      keywords: "Destino · Cambio · Ciclo",
+        body: "La rueda gira y nadie la detiene. Lo de arriba baja, lo de abajo sube. Acepta el ciclo, suelta lo que ya cumplió su parte y deja venir lo nuevo." },
+  11: { name: "La Justicia",     keywords: "Verdad · Equilibrio · Consecuencia",
+        body: "Espada y balanza, sin amor ni odio. Toda acción tiene su eco, todo gesto su peso. Día para saldar cuentas con honestidad y restituir lo que corresponde." },
+};
+
 // ── VISIÓN · daily omen number + composition ─────────────────
 function pickVisionNumber(date) {
   const rng = rngFor(date, "vision");
@@ -261,6 +291,8 @@ function getVisionData(numKey /* "00".."99" */) {
   const reduced = reduceNumber(n);
   const numerology = NUMEROLOGY[reduced] ?? NUMEROLOGY[0];
   const dream = SUENOS_TWO.find(([num]) => num === numKey);
+  const cardIndex = n % 12;
+  const tarot = TAROT[cardIndex] ?? TAROT[0];
   return {
     numKey,
     reduced,
@@ -270,6 +302,9 @@ function getVisionData(numKey /* "00".."99" */) {
     numerologyTitle: numerology.title,
     numerologyKeywords: numerology.keywords,
     numerologyBody: numerology.body,
+    tarotName: tarot.name,
+    tarotKeywords: tarot.keywords,
+    tarotBody: tarot.body,
   };
 }
 
@@ -287,6 +322,9 @@ function playVisionAnimation() {
 
   setText("vision-number",           data.numKey);
   setText("vision-dream",            data.dreamName);
+  setText("vision-tarot-name",       data.tarotName);
+  setText("vision-tarot-keywords",   data.tarotKeywords);
+  setText("vision-tarot-body",       data.tarotBody);
   setText("vision-numerology-title", data.numerologyTitle);
   setText("vision-reduction",
     Number(data.numKey) === data.reduced
@@ -307,9 +345,10 @@ function playVisionAnimation() {
   //   dormant → back (card-back full bleed)
   //          → face (flip to front, still full bleed)
   //          → background (card zooms out to fill the viewport, dims to backdrop)
-  //          → number (eyebrow + number panel cascades in over the backdrop)
-  //          → dream (dream panel cascades in)
-  //          → settled (numerology panel cascades in)
+  //          → number     (eyebrow + number panel cascades in over the backdrop)
+  //          → dream      (dream panel cascades in)
+  //          → numerology (numerology panel cascades in)
+  //          → settled    (tarot panel cascades in — the closing reveal)
   stage.dataset.state = "dormant";
   void stage.offsetWidth;
   if (_visionTimers) _visionTimers.forEach(clearTimeout);
@@ -321,7 +360,8 @@ function playVisionAnimation() {
   at(3400, "background");  // zoom out to backdrop (1.7s transition) — face lingers ~2.4s
   at(5300, "number");      // number panel cascades in (zoom-out lands ~5100ms)
   at(5950, "dream");       // dream panel
-  at(6600, "settled");     // numerology panel
+  at(6600, "numerology");  // numerology panel
+  at(7250, "settled");     // tarot panel — the closing reveal
 }
 
 let _visionTimers = [];
