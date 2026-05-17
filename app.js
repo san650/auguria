@@ -1436,3 +1436,40 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js").catch(() => {});
   });
 }
+
+// ── BUILD STAMP ──────────────────────────────────────────────
+// Tiny version label in the bottom-right corner so we can identify
+// which build is running inside an installed PWA. Source-of-truth is
+// the SW's VERSION constant; we postMessage to ask, and fall back to
+// parsing sw.js as text if there's no active SW yet (first install).
+(async function showAppVersion() {
+  const node = document.getElementById("app-version");
+  if (!node) return;
+
+  let version = null;
+  try {
+    const reg = await navigator.serviceWorker?.ready;
+    const sw = reg?.active;
+    if (sw) {
+      version = await new Promise((resolve) => {
+        const channel = new MessageChannel();
+        const timeout = setTimeout(() => resolve(null), 1000);
+        channel.port1.onmessage = (ev) => {
+          clearTimeout(timeout);
+          resolve(ev.data?.version ?? null);
+        };
+        sw.postMessage({ type: "GET_VERSION" }, [channel.port2]);
+      });
+    }
+  } catch { /* fall through to fetch fallback */ }
+
+  if (!version) {
+    try {
+      const res = await fetch("sw.js");
+      const text = await res.text();
+      version = text.match(/VERSION\s*=\s*["']([^"']+)["']/)?.[1] ?? null;
+    } catch { /* nothing more we can do */ }
+  }
+
+  if (version) node.textContent = version;
+})();

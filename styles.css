@@ -2502,3 +2502,23 @@ body[data-off-day="true"] .masthead {
   .vision__panel { transition: none !important; }
 }
 
+/* ── App version stamp ─────────────────────────────────────────
+   Tiny build identifier in the bottom-right corner. Non-interactive,
+   barely visible — exists so an installed PWA can be checked against
+   the latest deployed build at a glance. JS populates it from the SW. */
+.app-version {
+  position: fixed;
+  right: max(0.45rem, env(safe-area-inset-right));
+  bottom: max(0.35rem, env(safe-area-inset-bottom));
+  font-family: var(--font-serif);
+  font-size: 0.56rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.32;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+}
+.app-version:empty { display: none; }
+

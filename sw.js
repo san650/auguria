@@ -1,5 +1,6 @@
 /* Auguria service worker — offline-first cache. */
-const VERSION = "auguria-v39";
+const VERSION = "v41";
+const CACHE = `auguria-${VERSION}`;
 const ASSETS = [
   "./",
   "./index.html",
@@ -48,16 +49,24 @@ const ASSETS = [
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(VERSION).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting())
+    caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting())
   );
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter(k => k !== VERSION).map(k => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
+});
+
+// Respond to the page asking which build it's running. Used by the
+// tiny version stamp in the corner of the UI.
+self.addEventListener("message", (event) => {
+  if (event.data?.type === "GET_VERSION") {
+    event.ports[0]?.postMessage({ version: VERSION });
+  }
 });
 
 self.addEventListener("fetch", (event) => {
@@ -69,7 +78,7 @@ self.addEventListener("fetch", (event) => {
     caches.match(req).then((cached) => {
       const network = fetch(req).then((res) => {
         const copy = res.clone();
-        caches.open(VERSION).then((c) => c.put(req, copy)).catch(() => {});
+        caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
         return res;
       }).catch(() => cached);
       return cached || network;
