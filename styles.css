@@ -128,14 +128,7 @@ body {
   background-position: 0 0;
   opacity: 0.7;
   animation: twinkle 7s ease-in-out infinite alternate;
-  /* scroll parallax — body sets --star-py to -scrollY each frame. The
-     short linear transition smooths the pixel-snap stepping that would
-     otherwise be visible: with a 0.10× multiplier, each 10px of scroll
-     snaps to a 1px transform step. Interpolating over ~220ms hides the
-     steps without introducing perceptible lag. */
-  transform: translate3d(0, calc(var(--star-py, 0px) * 0.10), 0);
-  transition: transform 0.22s linear;
-  will-change: opacity, filter, transform;
+  will-change: opacity, filter;
 }
 .cosmos__stars {
   /* 4-point twinkle stars in three colour variants — vellum (warm
@@ -190,7 +183,6 @@ body {
   background-size: 100% 100%;
   opacity: 0.5;
   animation: twinkle 4s ease-in-out infinite alternate;
-  transform: translate3d(0, calc(var(--star-py, 0px) * 0.04), 0);
 }
 
 /* halo bloom — same star positions, blurred + screen-blended, pulsing
@@ -328,8 +320,6 @@ body {
   .cosmos__stars--soft::before,
   .cosmos__stars::after,
   .cosmos__comet { animation: none; }
-  .cosmos__stars,
-  .cosmos__stars--soft { transform: none; }
   .cosmos__comet { display: none; }
 }
 

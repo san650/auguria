@@ -1356,32 +1356,11 @@ document.body.dataset.drawerState =
 syncRoute();
 
 // ── COSMOS AMBIENT MOTION ────────────────────────────────────
-// Two effects share this block:
-//   1. Scroll parallax — body's --star-py feeds CSS transforms on the
-//      two starfields. Near layer translates more than the far layer,
-//      so the sky reads as depth as the page scrolls.
-//   2. Shooting star — a single .cosmos__comet element gets nudged
-//      around the viewport and re-triggered at random intervals.
+// Shooting star — a single .cosmos__comet element gets nudged around
+// the viewport and re-triggered at random intervals.
 (function wireCosmos() {
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
 
-  // ── Scroll parallax ────────────────────────────────────────
-  const body = document.body;
-  let scrollQueued = false;
-  function applyScroll() {
-    scrollQueued = false;
-    body.style.setProperty("--star-py", `${-window.scrollY}px`);
-  }
-  if (!reduceMotion.matches) {
-    window.addEventListener("scroll", () => {
-      if (scrollQueued) return;
-      scrollQueued = true;
-      requestAnimationFrame(applyScroll);
-    }, { passive: true });
-    applyScroll();
-  }
-
-  // ── Shooting star ──────────────────────────────────────────
   const comet = document.querySelector(".cosmos__comet");
   if (!comet) return;
 
