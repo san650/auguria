@@ -1,6 +1,10 @@
 /* Auguria service worker — offline-first cache. */
-const VERSION = "v42";
+const VERSION = "v44";
 const CACHE = `auguria-${VERSION}`;
+// Splash PNGs and the non-Latin Cormorant Garamond subsets are intentionally
+// absent: only one splash matches a given device's media query, and the
+// cyrillic/vietnamese subsets never load on a Spanish-only site. Both are
+// runtime-cached by the SWR fetch handler if anything ever requests them.
 const ASSETS = [
   "./",
   "./index.html",
@@ -11,27 +15,11 @@ const ASSETS = [
   "./fonts/fonts.css",
   "./fonts/cinzel-8vIJ7ww63mVu7gt7-GT7PkRXM8Xx.woff2",
   "./fonts/cinzel-8vIJ7ww63mVu7gt79mT7PkRXMw.woff2",
-  "./fonts/cormorantgaramond-co3ZmX5slCNuHLi8bLeY9MK7whWMhyjYrEtFmSqn7B6DxjY.woff2",
   "./fonts/cormorantgaramond-co3ZmX5slCNuHLi8bLeY9MK7whWMhyjYrEtGmSqn7B6DxjY.woff2",
-  "./fonts/cormorantgaramond-co3ZmX5slCNuHLi8bLeY9MK7whWMhyjYrEtHmSqn7B6DxjY.woff2",
   "./fonts/cormorantgaramond-co3ZmX5slCNuHLi8bLeY9MK7whWMhyjYrEtImSqn7B6D.woff2",
-  "./fonts/cormorantgaramond-co3ZmX5slCNuHLi8bLeY9MK7whWMhyjYrEtMmSqn7B6DxjY.woff2",
   "./fonts/cormorantgaramond-co3bmX5slCNuHLi8bLeY9MK7whWMhyjYp3tKky2F7i6C.woff2",
-  "./fonts/cormorantgaramond-co3bmX5slCNuHLi8bLeY9MK7whWMhyjYpHtKky2F7i6C.woff2",
-  "./fonts/cormorantgaramond-co3bmX5slCNuHLi8bLeY9MK7whWMhyjYpntKky2F7i6C.woff2",
   "./fonts/cormorantgaramond-co3bmX5slCNuHLi8bLeY9MK7whWMhyjYqXtKky2F7g.woff2",
-  "./fonts/cormorantgaramond-co3bmX5slCNuHLi8bLeY9MK7whWMhyjYrXtKky2F7i6C.woff2",
   "./fonts/italiana-QldNNTtLsx4E__B0XQmWaXx0xKVu.woff2",
-  "./icons/splash/splash-1125x2436.png",
-  "./icons/splash/splash-1170x2532.png",
-  "./icons/splash/splash-1179x2556.png",
-  "./icons/splash/splash-1242x2208.png",
-  "./icons/splash/splash-1242x2688.png",
-  "./icons/splash/splash-1284x2778.png",
-  "./icons/splash/splash-1290x2796.png",
-  "./icons/splash/splash-640x1136.png",
-  "./icons/splash/splash-750x1334.png",
-  "./icons/splash/splash-828x1792.png",
   "./icons/tarot/0.svg",
   "./icons/tarot/1.svg",
   "./icons/tarot/2.svg",
@@ -48,8 +36,14 @@ const ASSETS = [
 ];
 
 self.addEventListener("install", (event) => {
+  // `cache: 'reload'` forces each precache fetch to bypass the HTTP cache.
+  // GitHub Pages serves with Cache-Control: max-age=600, so without this
+  // bumping VERSION inside a 10-minute window would silently precache the
+  // pre-bump bytes from the browser HTTP cache.
   event.waitUntil(
-    caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting())
+    caches.open(CACHE)
+      .then((c) => c.addAll(ASSETS.map((url) => new Request(url, { cache: "reload" }))))
+      .then(() => self.skipWaiting())
   );
 });
 
@@ -77,8 +71,13 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(
     caches.match(req).then((cached) => {
       const network = fetch(req).then((res) => {
-        const copy = res.clone();
-        caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
+        // Only cache successful, same-origin, non-opaque responses. Without
+        // this guard a 404 or 5xx would overwrite a known-good cached asset
+        // — next request would serve the error instead of the working copy.
+        if (res.ok && res.type === "basic") {
+          const copy = res.clone();
+          caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
+        }
         return res;
       }).catch(() => cached);
       return cached || network;
