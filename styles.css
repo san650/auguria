@@ -465,7 +465,7 @@ body {
 /* ── Games column ─────────────────────────────────────────── */
 .games {
   max-width: var(--max);
-  margin: 0 auto;
+  margin: 3rem auto 0;
   padding: 0 var(--pad) clamp(3rem, 8vw, 5rem);
   display: flex;
   flex-direction: column;
@@ -956,83 +956,68 @@ body:not([data-active-view="china"])       [data-view="china"] { display: none; 
    ───────────────────────────────────────────────────────────── */
 .portals {
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0.9rem;
-  margin: 1.75rem auto 0;
-  max-width: 22rem;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.25rem, 6vw, 2rem);
+  margin: 1.5rem auto 0;
   width: 100%;
 }
 .portal {
-  display: grid;
-  grid-template-columns: 36px 1fr;
-  align-items: center;
-  gap: 0.95rem;
-  padding: 0.75rem 1.4rem 0.75rem 1rem;
-  font-family: var(--font-serif);
-  color: var(--gold);
-  background:
-    radial-gradient(ellipse at top, rgba(212,168,87,0.12) 0%, transparent 70%),
-    linear-gradient(180deg, rgba(28,23,80,0.36) 0%, rgba(10,13,42,0.5) 100%);
-  border: 1px solid rgba(212,168,87,0.45);
-  text-decoration: none;
   position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(54px, 14vw, 64px);
+  height: clamp(54px, 14vw, 64px);
+  color: var(--gold);
+  text-decoration: none;
   cursor: pointer;
-  transition: color 0.35s, border-color 0.35s, transform 0.35s, box-shadow 0.35s;
+  transition: color 0.35s, transform 0.35s;
+}
+.portal::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(212,168,87,0.5);
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255,240,200,0.14), transparent 60%),
+    radial-gradient(ellipse at center, rgba(28,23,80,0.45) 0%, rgba(10,13,42,0.55) 100%);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  transition: border-color 0.35s, box-shadow 0.35s, transform 0.5s;
 }
-.portal::before,
 .portal::after {
-  content: ""; position: absolute; top: 50%;
-  width: 8px; height: 8px;
-  border: 1px solid var(--gold);
-  transform: translateY(-50%) rotate(45deg);
-  background: var(--ink);
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 0.5px dashed rgba(212,168,87,0.28);
+  opacity: 0;
+  transition: opacity 0.45s, transform 1.2s linear;
 }
-.portal::before { left: -5px; }
-.portal::after  { right: -5px; }
 .portal:hover, .portal:focus-visible {
   color: var(--gold-bright);
-  border-color: var(--gold-bright);
   outline: 0;
-  box-shadow: 0 0 24px -4px rgba(236,200,121,0.4);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+}
+.portal:hover::before, .portal:focus-visible::before {
+  border-color: var(--gold-bright);
+  box-shadow: 0 0 26px -4px rgba(236,200,121,0.45);
+}
+.portal:hover::after, .portal:focus-visible::after {
+  opacity: 1;
+  transform: rotate(45deg);
 }
 .portal__icon {
-  width: 32px; height: 32px;
+  position: relative;
+  width: clamp(28px, 7vw, 34px);
+  height: clamp(28px, 7vw, 34px);
   display: grid; place-items: center;
   color: var(--gold);
-  border-radius: 50%;
-  border: 0.5px solid rgba(212,168,87,0.45);
-  background: radial-gradient(circle at 30% 25%, rgba(255,240,200,0.14), transparent 60%);
 }
-.portal__icon svg { width: 22px; height: 22px; display: block; }
-
-.portal__text {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.25rem;
-  min-width: 0;
-  text-align: left;
-}
-.portal__name {
-  font-family: var(--font-serif);
-  font-size: 0.78rem;
-  letter-spacing: 0.34em;
-  text-transform: uppercase;
-  color: inherit;
-}
-.portal__sub {
-  font-family: var(--font-body);
-  font-style: italic;
-  font-size: 0.92rem;
-  letter-spacing: 0.01em;
-  color: var(--vellum-soft);
-  text-transform: none;
-  opacity: 0.85;
-}
+.portal:hover .portal__icon, .portal:focus-visible .portal__icon { color: var(--gold-bright); }
+.portal__icon svg { width: 100%; height: 100%; display: block; }
 
 /* ─────────────────────────────────────────────────────────────
    Sueños view
@@ -1119,22 +1104,10 @@ body:not([data-active-view="china"])       [data-view="china"] { display: none; 
   opacity: 0.85;
 }
 
-/* Sticky search bar with a tinted dark fill + backdrop blur, so the
-   list scrolling beneath never bleeds through.  Negative horizontal
-   margins extend the band to the section edges (and the viewport edges
-   on phones), then internal padding restores the search field to the
-   original content width. */
+/* Inline search bar — flows with the page, no sticky/blur band. */
 .suenos__search-wrap {
-  position: sticky;
-  top: var(--safe-top);
-  z-index: 5;
-  padding: 0.75rem var(--pad) 1rem;
-  margin: 0 calc(var(--pad) * -1) 0.5rem;
-
-  background:
-    linear-gradient(180deg, rgba(10,13,42,0.94) 0%, rgba(10,13,42,0.88) 65%, rgba(10,13,42,0.7) 100%);
-  backdrop-filter: blur(8px) saturate(140%);
-  -webkit-backdrop-filter: blur(8px) saturate(140%);
+  padding: 0.25rem 0 1rem;
+  margin: 0 0 0.5rem;
 }
 .suenos__search {
   position: relative;
@@ -3079,6 +3052,54 @@ body[data-off-day="true"] .masthead {
 
 @media (prefers-reduced-motion: reduce) {
   .china-row { opacity: 1 !important; transform: none !important; animation: none !important; }
+}
+
+/* Empty-state — a small sigil and a two-line elegy when the search finds
+   nothing. Reuses .suenos__empty for the hidden behavior. */
+.china-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  padding: clamp(2rem, 6vw, 3rem) 1rem;
+  margin: 1rem 0 0;
+  text-align: center;
+  opacity: 0;
+  animation: chinaEmptyIn 0.45s cubic-bezier(.2,.7,.2,1) forwards;
+}
+@keyframes chinaEmptyIn { to { opacity: 1; } }
+.china-empty[hidden] { display: none; }
+
+.china-empty__glyph {
+  display: block;
+  width: clamp(56px, 14vw, 80px);
+  height: clamp(56px, 14vw, 80px);
+  color: var(--gold);
+  opacity: 0.55;
+  margin-bottom: 0.35rem;
+}
+.china-empty__glyph svg { width: 100%; height: 100%; display: block; }
+
+.china-empty__title {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: clamp(1.05rem, 0.95rem + 0.4vw, 1.2rem);
+  font-style: italic;
+  letter-spacing: 0.01em;
+  color: var(--vellum);
+}
+.china-empty__sub {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 0.62rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .china-empty { opacity: 1 !important; animation: none !important; }
 }
 
 /* ── Chinese reading inside the numero dialog ───────────── */

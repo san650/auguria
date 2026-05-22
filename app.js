@@ -1164,7 +1164,13 @@ function renderChinaList() {
       lastValor = entry.valor;
     }
 
-    const li = el("li", { class: "china-row", "data-valor": entry.valor });
+    const li = el("li", {
+      class: "china-row",
+      "data-valor": entry.valor,
+      "data-search": stripAccents(
+        `${entry.num} ${entry.body} ${CHINA_VALOR_LABEL[entry.valor]}`
+      ),
+    });
     const btn = el("button", {
       type: "button",
       class: "china-row__btn",
@@ -1180,6 +1186,56 @@ function renderChinaList() {
     frag.append(li);
   }
   root.replaceChildren(frag);
+}
+
+// Narrow the china ledger to rows that match a query — by digit, by
+// keyword from the body text, or by valoración label. Group dividers
+// hide when their entire group is filtered out.
+function wireChinaFilter() {
+  const root  = document.getElementById("china-list");
+  const input = document.getElementById("china-q");
+  const clear = document.querySelector(".china-view .suenos__clear");
+  const empty = document.getElementById("china-empty");
+  const legend = document.querySelector(".china-legend");
+  if (!root || !input || !clear || !empty) return;
+
+  function apply(raw) {
+    const q = stripAccents(raw.trim());
+    clear.hidden = raw.length === 0;
+
+    const groups = [];
+    let cur = null;
+    for (const li of root.children) {
+      if (li.classList.contains("china-divider")) {
+        cur = { divider: li, rows: [] };
+        groups.push(cur);
+      } else if (cur) {
+        cur.rows.push(li);
+      }
+    }
+
+    let matched = 0;
+    for (const { divider, rows } of groups) {
+      let groupVisible = 0;
+      for (const li of rows) {
+        const hit = q === "" || (li.dataset.search || "").includes(q);
+        li.style.display = hit ? "" : "none";
+        if (hit) { groupVisible++; matched++; }
+      }
+      divider.style.display = groupVisible > 0 ? "" : "none";
+    }
+
+    const noResults = matched === 0 && q !== "";
+    empty.hidden = !noResults;
+    if (legend) legend.style.display = noResults ? "none" : "";
+  }
+
+  input.addEventListener("input", e => apply(e.target.value));
+  clear.addEventListener("click", () => {
+    input.value = "";
+    apply("");
+    input.focus();
+  });
 }
 
 // ── SEQUENCE · user's picked numbers, persisted in localStorage ──
@@ -1592,6 +1648,7 @@ wireSuenosFilter();
 renderNumeroList();
 wireReductor();
 renderChinaList();
+wireChinaFilter();
 renderSequence();
 // Sync the body's drawer-state attribute to the drawer's HTML default so
 // the bottom-clearance CSS variable resolves correctly on first paint.
