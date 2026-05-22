@@ -828,11 +828,17 @@ body {
   font-family: var(--font-display);
   color: var(--gold);
   font-size: 2rem;
+  letter-spacing: 0.02em;
   background:
     radial-gradient(circle at 30% 25%, rgba(255,240,200,0.2), transparent 55%),
     linear-gradient(160deg, #16194a 0%, #0a0d2a 100%);
   position: relative;
+  font-variant-numeric: lining-nums tabular-nums;
 }
+/* Shrink the inscribed digits as the number grows so 555/1314/7456
+   stay inside the medallion's gold ring. */
+.numero__sigil[data-len="3"] { font-size: 1.6rem; }
+.numero__sigil[data-len="4"] { font-size: 1.3rem; letter-spacing: 0; }
 .numero__sigil::before {
   content: ""; position: absolute; inset: 5px;
   border: 0.5px solid rgba(212,168,87,0.35);
@@ -936,28 +942,34 @@ body {
    [data-active-view] on <body>. Hide the inactive view; the
    active one keeps its native display value.
    ───────────────────────────────────────────────────────────── */
-body[data-active-view="home"]   [data-view="dreams"],
-body[data-active-view="home"]   [data-view="vision"],
-body[data-active-view="dreams"] [data-view="home"],
-body[data-active-view="dreams"] [data-view="vision"],
-body[data-active-view="vision"] [data-view="home"],
-body[data-active-view="vision"] [data-view="dreams"] { display: none; }
+body:not([data-active-view="home"])        [data-view="home"],
+body:not([data-active-view="dreams"])      [data-view="dreams"],
+body:not([data-active-view="vision"])      [data-view="vision"],
+body:not([data-active-view="numerologia"]) [data-view="numerologia"],
+body:not([data-active-view="china"])       [data-view="china"] { display: none; }
 
 /* ─────────────────────────────────────────────────────────────
-   Entry button — sits at the foot of the masthead, mirrors the
-   diamond-cornered date pill so it reads as a sibling, not an
-   afterthought.
+   Portals — the three doorways under the masthead. Each one is a
+   doorways-style pill: diamond-tacked at the sides, vellum heading
+   above an italic sub-line. Stacked column on phones, single
+   centered file (clean & monastic) on every viewport.
    ───────────────────────────────────────────────────────────── */
-.dreams-entry {
-  display: inline-flex;
+.portals {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.9rem;
+  margin: 1.75rem auto 0;
+  max-width: 22rem;
+  width: 100%;
+}
+.portal {
+  display: grid;
+  grid-template-columns: 36px 1fr;
   align-items: center;
-  gap: 0.8rem;
-  margin: 1.5rem auto 0;
-  padding: 0.7rem 1.6rem 0.7rem 1.4rem;
+  gap: 0.95rem;
+  padding: 0.75rem 1.4rem 0.75rem 1rem;
   font-family: var(--font-serif);
-  font-size: 0.7rem;
-  letter-spacing: 0.38em;
-  text-transform: uppercase;
   color: var(--gold);
   background:
     radial-gradient(ellipse at top, rgba(212,168,87,0.12) 0%, transparent 70%),
@@ -970,25 +982,57 @@ body[data-active-view="vision"] [data-view="dreams"] { display: none; }
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
-.dreams-entry::before,
-.dreams-entry::after {
+.portal::before,
+.portal::after {
   content: ""; position: absolute; top: 50%;
   width: 8px; height: 8px;
   border: 1px solid var(--gold);
   transform: translateY(-50%) rotate(45deg);
   background: var(--ink);
 }
-.dreams-entry::before { left: -5px; }
-.dreams-entry::after  { right: -5px; }
-.dreams-entry:hover, .dreams-entry:focus-visible {
+.portal::before { left: -5px; }
+.portal::after  { right: -5px; }
+.portal:hover, .portal:focus-visible {
   color: var(--gold-bright);
   border-color: var(--gold-bright);
   outline: 0;
   box-shadow: 0 0 24px -4px rgba(236,200,121,0.4);
   transform: translateY(-1px);
 }
-.dreams-entry__icon { width: 18px; height: 18px; flex: 0 0 18px; }
-.dreams-entry__icon svg { width: 100%; height: 100%; display: block; }
+.portal__icon {
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  color: var(--gold);
+  border-radius: 50%;
+  border: 0.5px solid rgba(212,168,87,0.45);
+  background: radial-gradient(circle at 30% 25%, rgba(255,240,200,0.14), transparent 60%);
+}
+.portal__icon svg { width: 22px; height: 22px; display: block; }
+
+.portal__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  min-width: 0;
+  text-align: left;
+}
+.portal__name {
+  font-family: var(--font-serif);
+  font-size: 0.78rem;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: inherit;
+}
+.portal__sub {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.92rem;
+  letter-spacing: 0.01em;
+  color: var(--vellum-soft);
+  text-transform: none;
+  opacity: 0.85;
+}
 
 /* ─────────────────────────────────────────────────────────────
    Sueños view
@@ -1947,8 +1991,10 @@ body[data-drawer-state="expanded"] .suenos { --drawer-clearance: 240px; }
 }
 /* The selected date doesn't influence anything in the Sueños view, and
    the ribbon would overlap the sticky search bar there — so hide it. */
-body[data-active-view="dreams"] .date-ribbon,
-body[data-active-view="vision"] .date-ribbon {
+body[data-active-view="dreams"]      .date-ribbon,
+body[data-active-view="vision"]      .date-ribbon,
+body[data-active-view="numerologia"] .date-ribbon,
+body[data-active-view="china"]       .date-ribbon {
   transform: translateY(-110%);
   pointer-events: none;
 }
@@ -2520,4 +2566,548 @@ body[data-off-day="true"] .masthead {
   z-index: 1;
 }
 .app-version:empty { display: none; }
+
+/* ─────────────────────────────────────────────────────────────
+   NUMEROLOGÍA view — catalogue of root + master numbers, plus a
+   live reductor input. Inherits .suenos__head, .suenos__back,
+   .suenos__rubric so the world stays cohesive.
+   ───────────────────────────────────────────────────────────── */
+.numero-view {
+  position: relative;
+  z-index: 1;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--pad) clamp(3rem, 8vw, 5rem);
+}
+
+/* ── Reductor — input + live reduction chain ────────────── */
+.reductor {
+  margin: clamp(1.5rem, 5vw, 2.5rem) 0 0;
+  padding: clamp(1.5rem, 4vw, 2rem) clamp(1.1rem, 3vw, 1.75rem) clamp(1.5rem, 4vw, 2rem);
+  position: relative;
+  background:
+    radial-gradient(ellipse at top, rgba(212,168,87,0.08) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(28,23,80,0.36) 0%, rgba(10,13,42,0.48) 100%);
+  backdrop-filter: blur(6px) saturate(1.1);
+  -webkit-backdrop-filter: blur(6px) saturate(1.1);
+  border: 1px solid rgba(212,168,87,0.28);
+  box-shadow:
+    0 1px 0 rgba(212,168,87,0.12) inset,
+    0 8px 22px -8px rgba(0,0,0,0.65),
+    0 24px 48px -16px rgba(0,0,0,0.55);
+  isolation: isolate;
+}
+.reductor::before, .reductor::after {
+  content: ""; position: absolute;
+  width: 22px; height: 22px;
+  border: 1px solid var(--gold);
+  opacity: 0.55;
+  pointer-events: none;
+}
+.reductor::before { top: 8px; left: 8px; border-right: 0; border-bottom: 0; }
+.reductor::after  { bottom: 8px; right: 8px; border-left: 0; border-top: 0; }
+
+.reductor__rubric {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0 0 1.25rem;
+}
+.reductor__rubric .suenos__rubric-marker {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+}
+
+.reductor__field {
+  display: block;
+  position: relative;
+  padding: 0.85rem 1rem 0.65rem;
+  border: 1px solid rgba(212,168,87,0.4);
+  background:
+    radial-gradient(ellipse at top, rgba(212,168,87,0.08) 0%, transparent 70%),
+    linear-gradient(180deg, rgba(28,23,80,0.3) 0%, rgba(10,13,42,0.45) 100%);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.reductor__field::before,
+.reductor__field::after {
+  content: ""; position: absolute; top: 50%;
+  width: 8px; height: 8px;
+  border: 1px solid var(--gold);
+  transform: translateY(-50%) rotate(45deg);
+  background: var(--ink);
+}
+.reductor__field::before { left: -5px; }
+.reductor__field::after  { right: -5px; }
+.reductor__field:focus-within {
+  border-color: var(--gold-bright);
+  box-shadow: 0 0 22px -4px rgba(236,200,121,0.35);
+}
+.reductor__field-label {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 0.6rem;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.85;
+  margin-bottom: 0.3rem;
+}
+.reductor__field input {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  color: var(--vellum);
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 1.2rem + 1.5vw, 2.2rem);
+  letter-spacing: 0.04em;
+  padding: 0.1rem 0 0;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.reductor__field input::placeholder {
+  color: var(--vellum-soft);
+  opacity: 0.4;
+  font-style: italic;
+}
+
+.reductor__result {
+  margin: 1.5rem 0 0;
+  padding: 1.25rem 0.5rem 0.5rem;
+  border-top: 1px solid rgba(212,168,87,0.22);
+  text-align: center;
+  animation: reductorIn 0.45s cubic-bezier(.2,.7,.2,1);
+}
+.reductor__result[hidden] { display: none; }
+@keyframes reductorIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+.reductor__chain {
+  font-family: var(--font-serif);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  color: var(--gold);
+  opacity: 0.9;
+  margin: 0 0 1rem;
+  font-variant-numeric: lining-nums tabular-nums;
+  text-wrap: balance;
+}
+.reductor__sigil {
+  margin: 0 auto 0.85rem;
+  width: 88px; height: 88px;
+  border: 1px solid rgba(212,168,87,0.5);
+  border-radius: 50%;
+  display: grid; place-items: center;
+  font-family: var(--font-display);
+  color: var(--gold);
+  font-size: 2.4rem;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255,240,200,0.2), transparent 55%),
+    linear-gradient(160deg, #16194a 0%, #0a0d2a 100%);
+  position: relative;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.reductor__sigil::before {
+  content: ""; position: absolute; inset: 5px;
+  border: 0.5px solid rgba(212,168,87,0.35);
+  border-radius: 50%;
+}
+.reductor__result[data-master="true"] .reductor__sigil {
+  border-color: var(--gold-bright);
+  box-shadow:
+    0 0 0 1px rgba(236,200,121,0.35) inset,
+    0 0 26px -4px rgba(236,200,121,0.4);
+}
+.reductor__keywords {
+  font-family: var(--font-body);
+  font-style: italic;
+  color: var(--gold-bright);
+  font-size: 1rem;
+  margin: 0 0 0.35rem;
+}
+.reductor__name {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 1.85rem);
+  margin: 0 0 0.5rem;
+  color: var(--vellum);
+  line-height: 1.05;
+}
+.reductor__body {
+  font-family: var(--font-body);
+  color: var(--vellum-soft);
+  font-size: 0.98rem;
+  line-height: 1.55;
+  margin: 0 0 1rem;
+  text-wrap: balance;
+}
+.reductor__open {
+  display: inline-block;
+  margin: 0.5rem auto 0;
+  padding: 0.6rem 1.4rem;
+  font-family: var(--font-serif);
+  font-size: 0.65rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background:
+    radial-gradient(ellipse at top, rgba(212,168,87,0.12) 0%, transparent 70%),
+    linear-gradient(180deg, rgba(28,23,80,0.4) 0%, rgba(10,13,42,0.55) 100%);
+  border: 1px solid rgba(212,168,87,0.45);
+  position: relative;
+  cursor: pointer;
+  transition: color 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+}
+.reductor__open::before, .reductor__open::after {
+  content: ""; position: absolute; top: 50%;
+  width: 6px; height: 6px;
+  border: 1px solid var(--gold);
+  transform: translateY(-50%) rotate(45deg);
+  background: var(--ink);
+}
+.reductor__open::before { left: -4px; }
+.reductor__open::after  { right: -4px; }
+.reductor__open:hover, .reductor__open:focus-visible {
+  color: var(--gold-bright);
+  border-color: var(--gold-bright);
+  box-shadow: 0 0 22px -4px rgba(236,200,121,0.4);
+  transform: translateY(-1px);
+  outline: 0;
+}
+.reductor__hint {
+  margin: 1rem 0 0;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--vellum-soft);
+  opacity: 0.6;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* ── Catalogue of root + master numbers ─────────────────── */
+.numero-list { margin: clamp(2.5rem, 6vw, 3.5rem) 0 0; }
+.numero-list__grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  /* Phones get a single column so the sigil + title sit on one line
+     with the title in its full-width display font; the 2-col layout
+     used to cram titles like "El Confidente" onto two lines on iPhones. */
+  grid-template-columns: 1fr;
+  gap: clamp(0.85rem, 2.5vw, 1.25rem);
+}
+@media (min-width: 560px) {
+  .numero-list__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 820px) {
+  .numero-list__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.numero-list__grid--masters {
+  grid-template-columns: 1fr;
+  gap: clamp(0.75rem, 2vw, 1rem);
+}
+@media (min-width: 560px) {
+  .numero-list__grid--masters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.numero-cell {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: numeroCellIn 0.55s cubic-bezier(.2,.7,.2,1) forwards;
+}
+@keyframes numeroCellIn { to { opacity: 1; transform: none; } }
+.numero-cell:nth-child(1) { animation-delay: 0.04s; }
+.numero-cell:nth-child(2) { animation-delay: 0.10s; }
+.numero-cell:nth-child(3) { animation-delay: 0.16s; }
+.numero-cell:nth-child(4) { animation-delay: 0.22s; }
+.numero-cell:nth-child(5) { animation-delay: 0.28s; }
+.numero-cell:nth-child(6) { animation-delay: 0.34s; }
+.numero-cell:nth-child(7) { animation-delay: 0.40s; }
+.numero-cell:nth-child(8) { animation-delay: 0.46s; }
+.numero-cell:nth-child(9) { animation-delay: 0.52s; }
+.numero-cell:nth-child(n+10) { animation-delay: 0.58s; }
+
+.numero-cell__btn {
+  position: relative;
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  grid-template-rows: auto auto auto;
+  grid-template-areas:
+    "sigil head"
+    "sigil keys"
+    "body  body";
+  width: 100%;
+  align-items: start;
+  text-align: left;
+  gap: 0.4rem 0.95rem;
+  padding: 1rem 1rem 1.1rem;
+  background:
+    radial-gradient(ellipse at top, rgba(212,168,87,0.08) 0%, transparent 65%),
+    linear-gradient(180deg, rgba(28,23,80,0.34) 0%, rgba(10,13,42,0.45) 100%);
+  border: 1px solid rgba(212,168,87,0.28);
+  color: var(--vellum);
+  cursor: pointer;
+  transition: border-color 0.35s, box-shadow 0.35s, transform 0.35s;
+}
+.numero-cell__btn::before,
+.numero-cell__btn::after {
+  content: ""; position: absolute;
+  width: 14px; height: 14px;
+  border: 1px solid var(--gold);
+  opacity: 0.5;
+  pointer-events: none;
+}
+.numero-cell__btn::before { top: 4px; left: 4px; border-right: 0; border-bottom: 0; }
+.numero-cell__btn::after  { bottom: 4px; right: 4px; border-left: 0; border-top: 0; }
+.numero-cell__btn:hover,
+.numero-cell__btn:focus-visible {
+  border-color: var(--gold-bright);
+  box-shadow:
+    0 0 0 1px rgba(236,200,121,0.18) inset,
+    0 0 24px -4px rgba(236,200,121,0.35),
+    0 12px 24px -8px rgba(0,0,0,0.6);
+  transform: translateY(-2px);
+  outline: 0;
+}
+
+.numero-cell__sigil {
+  grid-area: sigil;
+  width: 56px; height: 56px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(212,168,87,0.45);
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255,240,200,0.2), transparent 55%),
+    linear-gradient(160deg, #16194a 0%, #0a0d2a 100%);
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  color: var(--gold);
+  position: relative;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.numero-cell__sigil::before {
+  content: ""; position: absolute; inset: 4px;
+  border: 0.5px solid rgba(212,168,87,0.32);
+  border-radius: 50%;
+}
+
+.numero-cell--master .numero-cell__sigil {
+  border-color: var(--gold-bright);
+  color: var(--gold-bright);
+  box-shadow:
+    0 0 0 1px rgba(236,200,121,0.25) inset,
+    0 0 24px -6px rgba(236,200,121,0.35);
+}
+
+.numero-cell__head { grid-area: head; min-width: 0; }
+.numero-cell__eyebrow {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 0.58rem;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.78;
+}
+.numero-cell__title {
+  margin: 0.1rem 0 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.2rem, 1rem + 0.6vw, 1.45rem);
+  line-height: 1.05;
+  color: var(--vellum);
+}
+.numero-cell__keywords {
+  grid-area: keys;
+  margin: 0;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.92rem;
+  color: var(--celeste);
+  opacity: 0.92;
+}
+.numero-cell__body {
+  grid-area: body;
+  margin: 0.3rem 0 0;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--vellum-soft);
+  text-wrap: balance;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .numero-cell { opacity: 1 !important; transform: none !important; animation: none !important; }
+  .reductor__result { animation: none !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   NUMEROLOGÍA CHINA view — sectioned ledger, grouped by valoración.
+   Each row is a tappable button that opens the numero dialog.
+   ───────────────────────────────────────────────────────────── */
+.china-view {
+  position: relative;
+  z-index: 1;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--pad) clamp(3rem, 8vw, 5rem);
+}
+
+.china-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 0.6rem;
+  margin: 0 0 clamp(1.5rem, 4vw, 2rem);
+}
+
+/* Shared chip — used in the legend, the section dividers and the dialog. */
+.china-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.32rem 0.7rem;
+  font-family: var(--font-serif);
+  font-size: 0.6rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: rgba(10,13,42,0.45);
+  line-height: 1;
+}
+.china-tag--positivo { color: var(--gold-bright); border-color: rgba(236,200,121,0.65); background: rgba(236,200,121,0.1); }
+.china-tag--neutral  { color: var(--celeste);     border-color: rgba(138,169,216,0.6); background: rgba(138,169,216,0.1); }
+.china-tag--negativo { color: var(--rose);        border-color: rgba(201,126,126,0.6); background: rgba(201,126,126,0.1); }
+
+.china-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.china-divider {
+  margin: clamp(1.5rem, 4vw, 2rem) 0 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding-left: 0.25rem;
+}
+.china-divider:first-child { margin-top: 0; }
+.china-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(212,168,87,0.4), rgba(212,168,87,0.02));
+}
+
+.china-row {
+  border-bottom: 1px solid rgba(212,168,87,0.18);
+  opacity: 0;
+  transform: translateY(8px);
+  animation: chinaRowIn 0.5s cubic-bezier(.2,.7,.2,1) forwards;
+}
+@keyframes chinaRowIn { to { opacity: 1; transform: none; } }
+.china-row:nth-child(2)  { animation-delay: 0.02s; }
+.china-row:nth-child(3)  { animation-delay: 0.05s; }
+.china-row:nth-child(4)  { animation-delay: 0.08s; }
+.china-row:nth-child(5)  { animation-delay: 0.11s; }
+.china-row:nth-child(6)  { animation-delay: 0.14s; }
+.china-row:nth-child(7)  { animation-delay: 0.17s; }
+.china-row:nth-child(8)  { animation-delay: 0.20s; }
+.china-row:nth-child(9)  { animation-delay: 0.23s; }
+.china-row:nth-child(10) { animation-delay: 0.26s; }
+.china-row:nth-child(n+11) { animation-delay: 0.30s; }
+
+.china-row__btn {
+  display: grid;
+  grid-template-columns: minmax(72px, auto) 1fr 1.4rem;
+  align-items: center;
+  width: 100%;
+  gap: 0.95rem;
+  padding: 0.95rem 0.4rem 0.95rem 0.55rem;
+  text-align: left;
+  color: var(--vellum);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.china-row__btn:hover,
+.china-row__btn:focus-visible {
+  background: linear-gradient(90deg, rgba(212,168,87,0.08), rgba(212,168,87,0.01));
+  outline: 0;
+}
+
+.china-row__num {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 1.3rem + 1.2vw, 2.2rem);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: var(--gold);
+  font-variant-numeric: lining-nums tabular-nums;
+  text-align: center;
+  min-width: 2.6rem;
+}
+.china-row[data-valor="positivo"] .china-row__num { color: var(--gold-bright); }
+.china-row[data-valor="neutral"]  .china-row__num { color: var(--celeste); }
+.china-row[data-valor="negativo"] .china-row__num { color: var(--rose); }
+
+.china-row__body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  line-height: 1.5;
+  color: var(--vellum);
+  text-wrap: balance;
+}
+.china-row__chev {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--gold);
+  opacity: 0.5;
+  transition: transform 0.3s, opacity 0.3s, color 0.3s;
+  text-align: right;
+}
+.china-row__btn:hover .china-row__chev,
+.china-row__btn:focus-visible .china-row__chev {
+  transform: translateX(3px);
+  opacity: 1;
+  color: var(--gold-bright);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .china-row { opacity: 1 !important; transform: none !important; animation: none !important; }
+}
+
+/* ── Chinese reading inside the numero dialog ───────────── */
+.numero__china {
+  margin: 1.3rem 0 0;
+  padding-top: 1.1rem;
+  border-top: 1px solid rgba(212,168,87,0.25);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+}
+.numero__china[hidden] { display: none; }
+.numero__china-label {
+  font-family: var(--font-serif);
+  font-size: 0.6rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0;
+  opacity: 0.85;
+}
+.numero__china-body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  line-height: 1.5;
+  color: var(--vellum);
+  text-wrap: balance;
+}
 

@@ -1,5 +1,5 @@
 /* Auguria service worker — offline-first cache. */
-const VERSION = "v44";
+const VERSION = "v45";
 const CACHE = `auguria-${VERSION}`;
 // Splash PNGs and the non-Latin Cormorant Garamond subsets are intentionally
 // absent: only one splash matches a given device's media query, and the

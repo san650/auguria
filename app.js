@@ -249,6 +249,46 @@ const NUMEROLOGY = {
   },
 };
 
+// ── CHINESE NUMEROLOGY ───────────────────────────────────────
+// Cultural reading: each entry maps a numeric code to its colloquial
+// meaning and a valoración (positivo · neutral · negativo). The keys
+// are integers so any number-shaped string can be looked up.
+const NUMEROLOGY_CHINA = {
+  2:    { valor: "positivo", body: "Representa unión, pareja, equilibrio y buenos deseos, especialmente en contextos como bodas y Año Nuevo chino." },
+  8:    { valor: "positivo", body: "Asociado con riqueza, prosperidad, éxito económico y buena fortuna material." },
+  9:    { valor: "positivo", body: "Representa longevidad, eternidad, duración y amor duradero. Se usa en gestos románticos como 99 rosas o fechas con 9." },
+  4:    { valor: "negativo", body: "Considerado el número más desafortunado; se evita en pisos de edificios, direcciones, matrículas y teléfonos." },
+  5:    { valor: "negativo", body: "Se asocia con tristeza, llanto o mala fortuna." },
+  7:    { valor: "neutral",  body: "Lectura ambigua: puede ser favorable para relaciones y energía vital, pero también se vincula con el Festival de los Fantasmas y con la idea de engaño." },
+  250:  { valor: "negativo", body: "Expresión insultante: «tonto», «estúpido» o «no muy cuerdo»." },
+  520:  { valor: "positivo", body: "Expresión romántica para decir «te amo». El 20 de mayo (5/20) se asocia con un San Valentín chino moderno." },
+  748:  { valor: "negativo", body: "Expresión agresiva equivalente a «vete al diablo» o «piérdete»." },
+  555:  { valor: "negativo", body: "Se usa en internet para expresar tristeza, pena o llanto." },
+  88:   { valor: "neutral",  body: "Forma informal de despedirse en internet o en mensajes." },
+  1314: { valor: "positivo", body: "Significa «para siempre», «por el resto de mi vida», amor duradero." },
+  7456: { valor: "negativo", body: "Expresa enojo: «me estás haciendo enojar» o «me muero de rabia»." },
+  995:  { valor: "negativo", body: "Pedido de ayuda: «¡sálvame!» o «ayúdame»." },
+};
+
+const CHINA_VALOR_LABEL = {
+  positivo: "Positivo",
+  neutral:  "Neutral",
+  negativo: "Negativo",
+};
+
+// Sorted by valoración (positivos primero, luego neutrales, luego negativos)
+// and within each group by numerical value — so the ledger reads like a
+// fortune scroll: bendiciones first, ambigüedades en el medio, infortunios al final.
+const CHINA_ORDER = { positivo: 0, neutral: 1, negativo: 2 };
+function chinaEntries() {
+  return Object.entries(NUMEROLOGY_CHINA)
+    .map(([k, v]) => ({ num: Number(k), ...v }))
+    .sort((a, b) => {
+      const d = CHINA_ORDER[a.valor] - CHINA_ORDER[b.valor];
+      return d !== 0 ? d : a.num - b.num;
+    });
+}
+
 // ── ARCANOS · the 12 Major Arcana the vision deck draws from ─
 // numKey % 12 selects the card index, matching the icons/tarot/N.svg
 // art and the names rendered on those cards.
@@ -497,6 +537,9 @@ const dlgBody      = document.getElementById("numero-body");
 const dlgSigil     = document.getElementById("numero-sigil");
 const dlgDream     = document.getElementById("numero-dream");
 const dlgDreamName = document.getElementById("numero-dream-name");
+const dlgChina     = document.getElementById("numero-china");
+const dlgChinaTag  = document.getElementById("numero-china-tag");
+const dlgChinaBody = document.getElementById("numero-china-body");
 const dlgAdd       = document.getElementById("numero-add");
 
 function openNumero(n) {
@@ -505,6 +548,7 @@ function openNumero(n) {
   const isMaster = (reduced === 11 || reduced === 22 || reduced === 33);
 
   dlgSigil.textContent = String(n);
+  dlgSigil.dataset.len = String(String(n).length);
   dlgTitle.textContent = entry.title;
 
   dlgRed.replaceChildren();
@@ -533,6 +577,22 @@ function openNumero(n) {
   } else {
     dlgDreamName.textContent = "";
     dlgDream.hidden = true;
+  }
+
+  // Chinese reading — only when the number has a colloquial code in the table.
+  const china = NUMEROLOGY_CHINA[n];
+  if (china) {
+    dlgChinaTag.textContent = CHINA_VALOR_LABEL[china.valor];
+    dlgChinaTag.className = `china-tag china-tag--${china.valor}`;
+    dlgChinaBody.textContent = china.body;
+    dlgChina.dataset.valor = china.valor;
+    dlgChina.hidden = false;
+  } else {
+    dlgChinaBody.textContent = "";
+    dlgChinaTag.textContent = "";
+    dlgChinaTag.className = "china-tag";
+    delete dlgChina.dataset.valor;
+    dlgChina.hidden = true;
   }
 
   // Action button reflects whether this number is already in the sequence.
@@ -572,8 +632,9 @@ document.addEventListener("click", (ev) => {
     return;
   }
 
-  // Open numerology (lottery medallions, sueño cells, sueño rows, chips)
-  const btn = ev.target.closest(".num, .sueno__face, .sueno-row__btn, .seq-chip__num");
+  // Open numerology (lottery medallions, sueño cells, sueño rows, chips,
+  // root/master cards, china rows)
+  const btn = ev.target.closest(".num, .sueno__face, .sueno-row__btn, .seq-chip__num, .numero-cell__btn, .china-row__btn");
   if (btn) { openNumero(Number(btn.dataset.number)); return; }
 
   if (ev.target.closest("[data-close]")) { dialog.close(); return; }
@@ -943,6 +1004,158 @@ function wireSuenosFilter() {
   });
 }
 
+// ── NUMEROLOGÍA VIEW ─────────────────────────────────────────
+// Render the catalogue of root numbers (0–9) and master numbers (11/22/33)
+// as a grid of cards. Each card opens the existing numero dialog on tap,
+// so the dialog stays the single source of truth for a number's reading.
+function renderNumeroList() {
+  const roots = document.getElementById("numero-list-roots");
+  const masters = document.getElementById("numero-list-masters");
+  if (!roots || !masters) return;
+
+  const make = (n) => {
+    const entry = NUMEROLOGY[n];
+    const isMaster = (n === 11 || n === 22 || n === 33);
+
+    const li = el("li", { class: "numero-cell" + (isMaster ? " numero-cell--master" : "") });
+    const btn = el("button", {
+      type: "button",
+      class: "numero-cell__btn",
+      "data-number": String(n),
+      "aria-label": `Número ${n} · ${entry.title}`,
+    });
+
+    const sigil = el("span", { class: "numero-cell__sigil", text: String(n) });
+    const head = el("div", { class: "numero-cell__head" },
+      el("p", { class: "numero-cell__eyebrow",
+        text: isMaster ? "Número maestro" : "Cifra raíz" }),
+      el("h3", { class: "numero-cell__title",
+        text: entry.title.replace(/\s*·\s*Maestro$/, "") }),
+    );
+    const keys = el("p", { class: "numero-cell__keywords", text: entry.keywords });
+    const body = el("p", { class: "numero-cell__body", text: entry.body });
+
+    btn.append(sigil, head, keys, body);
+    li.append(btn);
+    return li;
+  };
+
+  const rootsFrag = document.createDocumentFragment();
+  for (let n = 0; n <= 9; n++) rootsFrag.append(make(n));
+  roots.replaceChildren(rootsFrag);
+
+  const mastersFrag = document.createDocumentFragment();
+  for (const n of [11, 22, 33]) mastersFrag.append(make(n));
+  masters.replaceChildren(mastersFrag);
+}
+
+// ── REDUCTOR · live numerology reduction ─────────────────────
+// As the user types, walk the digit sum until we hit a root or a
+// master. The chain is rendered verbatim ("1985 → 1+9+8+5 = 23 →
+// 2+3 = 5") so the operation is its own teacher.
+function digitSum(n) {
+  return String(n).split("").reduce((s, d) => s + (+d), 0);
+}
+function reductionSteps(n) {
+  if (!Number.isFinite(n) || n < 0) return null;
+  const chain = [n];
+  let cur = n;
+  while (cur > 9) {
+    if (cur === 11 || cur === 22 || cur === 33) break;
+    cur = digitSum(cur);
+    chain.push(cur);
+  }
+  return { chain, final: cur, isMaster: cur === 11 || cur === 22 || cur === 33 };
+}
+
+function wireReductor() {
+  const input    = document.getElementById("reductor-input");
+  const result   = document.getElementById("reductor-result");
+  const chainEl  = document.getElementById("reductor-chain");
+  const sigil    = document.getElementById("reductor-sigil");
+  const nameEl   = document.getElementById("reductor-name");
+  const keysEl   = document.getElementById("reductor-keywords");
+  const bodyEl   = document.getElementById("reductor-body");
+  const openBtn  = document.getElementById("reductor-open");
+  if (!input || !result) return;
+
+  function update() {
+    // Strip everything that isn't a digit, then bound the typed length
+    // so paste of an absurd integer doesn't blow up the chain.
+    const raw = input.value.replace(/\D+/g, "").slice(0, 9);
+    if (raw !== input.value) input.value = raw;
+
+    if (!raw) { result.hidden = true; openBtn.dataset.number = ""; return; }
+
+    const n = Number(raw);
+    const r = reductionSteps(n);
+    if (!r) { result.hidden = true; return; }
+
+    // Build the chain "1985 → 1+9+8+5 = 23 → 2+3 = 5"
+    const parts = [String(r.chain[0])];
+    for (let i = 0; i < r.chain.length - 1; i++) {
+      const v = r.chain[i];
+      const next = r.chain[i + 1];
+      const sumExpr = String(v).split("").join(" + ");
+      parts.push(`${sumExpr} = ${next}`);
+    }
+    chainEl.textContent = parts.join("  →  ");
+
+    const entry = NUMEROLOGY[r.final] ?? NUMEROLOGY[0];
+    sigil.textContent = String(r.final);
+    nameEl.textContent = entry.title;
+    keysEl.textContent = entry.keywords;
+    bodyEl.textContent = entry.body;
+    result.hidden = false;
+    result.dataset.master = r.isMaster ? "true" : "false";
+    openBtn.dataset.number = String(r.final);
+  }
+
+  input.addEventListener("input", update);
+  // Open the existing numero dialog for the reduced number — keeps the
+  // dialog as the source of truth, including the jugada-add affordance.
+  openBtn.addEventListener("click", () => {
+    const n = Number(openBtn.dataset.number);
+    if (Number.isFinite(n)) openNumero(n);
+  });
+}
+
+// ── CHINESE NUMEROLOGY VIEW ──────────────────────────────────
+function renderChinaList() {
+  const root = document.getElementById("china-list");
+  if (!root) return;
+  const frag = document.createDocumentFragment();
+
+  let lastValor = null;
+  for (const entry of chinaEntries()) {
+    if (entry.valor !== lastValor) {
+      // Group header — separates positivo / neutral / negativo
+      const header = el("li", { class: "china-divider", "aria-hidden": "true" },
+        el("span", { class: `china-tag china-tag--${entry.valor}`,
+          text: CHINA_VALOR_LABEL[entry.valor] }),
+      );
+      frag.append(header);
+      lastValor = entry.valor;
+    }
+
+    const li = el("li", { class: "china-row", "data-valor": entry.valor });
+    const btn = el("button", {
+      type: "button",
+      class: "china-row__btn",
+      "data-number": String(entry.num),
+      "aria-label": `Número ${entry.num} · ${CHINA_VALOR_LABEL[entry.valor]}`,
+    });
+    btn.append(
+      el("span", { class: "china-row__num", text: String(entry.num) }),
+      el("p",    { class: "china-row__body", text: entry.body }),
+      el("span", { class: "china-row__chev", "aria-hidden": "true", text: "›" }),
+    );
+    li.append(btn);
+    frag.append(li);
+  }
+  root.replaceChildren(frag);
+}
+
 // ── SEQUENCE · user's picked numbers, persisted in localStorage ──
 const SEQUENCE_KEY = "auguria:sequence";
 const MAX_SEQUENCE = 12;
@@ -1158,8 +1371,10 @@ function toggleDrawer() {
 let _routeBooted = false;
 function syncRoute() {
   let view = "home";
-  if (location.hash === "#/dreams")      view = "dreams";
-  else if (location.hash === "#/vision") view = "vision";
+  if      (location.hash === "#/dreams")       view = "dreams";
+  else if (location.hash === "#/vision")       view = "vision";
+  else if (location.hash === "#/numerologia")  view = "numerologia";
+  else if (location.hash === "#/china")        view = "china";
   document.body.dataset.activeView = view;
   // Reset scroll when switching views — the views are independently long.
   window.scrollTo({ top: 0, behavior: "instant" });
@@ -1348,6 +1563,9 @@ renderGames();
 renderSuenosTwo();
 renderSuenosThree();
 wireSuenosFilter();
+renderNumeroList();
+wireReductor();
+renderChinaList();
 renderSequence();
 // Sync the body's drawer-state attribute to the drawer's HTML default so
 // the bottom-clearance CSS variable resolves correctly on first paint.
